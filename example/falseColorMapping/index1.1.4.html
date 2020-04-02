@@ -67,7 +67,7 @@
 
 <script>
 
-    // Populate colormap dropdown with all the default ones available 
+    // Populate colormap dropdown with all the default ones available
     // in cornerstone and also a "Custom" option
     function fillColormapsList() {
         var $dropdown = $('#colormaps');
@@ -102,8 +102,6 @@
 
         var imageId = 'example://1';
 
-        var windowWidth , windowCenter;
-
         // Load the example image and display it
         cornerstone.loadImage(imageId).then(function(image) {
             cornerstone.displayImage(element, image);
@@ -128,26 +126,18 @@
                     var viewport = cornerstone.getViewport(element);
 
                     if (mouseButton == 1) {
-                        if (windowWidth == undefined && windowCenter == undefined) {
-                            windowWidth = viewport.voi.windowWidth;
-                            windowCenter = viewport.voi.windowCenter;
-                        }
-                        else{
-                            windowWidth += (deltaX / viewport.scale);
-                            windowCenter +=  (deltaY / viewport.scale);
-
-                        }
-                        // var enableElement = cornerstone.getEnabledElement(element).image;
-                         // = viewport.voi.windowWidth;
-                         // = viewport.voi.windowCenter;
-                        console.log(image);
-
-                        // cornerstone.setViewport(element, viewport);
-
-                        // cornerstone.convertToFalseColorImage(element, "jet");
-                        cornerstone.convertToFalseColorImageWithWC(element,  $('#colormaps').val(), windowWidth, windowCenter);
-                        cornerstone.updateImage(element, true);
+                        viewport.voi.windowWidth += (deltaX / viewport.scale);
+                        viewport.voi.windowCenter += (deltaY / viewport.scale);
+                        cornerstone.setViewport(element, viewport);
                         $('#bottomleft').text("WW/WL:" + Math.round(viewport.voi.windowWidth) + "/" + Math.round(viewport.voi.windowCenter));
+                    } else if (mouseButton == 2) {
+                        viewport.translation.x += (deltaX / viewport.scale);
+                        viewport.translation.y += (deltaY / viewport.scale);
+                        cornerstone.setViewport(element, viewport);
+                    } else if (mouseButton == 3) {
+                        viewport.scale += (deltaY / 100);
+                        cornerstone.setViewport(element, viewport);
+                        $('#bottomright').text("Zoom: " + viewport.scale.toFixed(2) + "x");
                     }
                 });
 
@@ -156,16 +146,15 @@
                     $(document).unbind('mouseup');
                 });
             });
-
         });
 
         // Dropdown listener to get the new colormap
         // selected by the user and update the image
         function colormapChanged() {
-            var image = cornerstone.getEnabledElement(element).image;
+            var enabledElement = cornerstone.getEnabledElement(element);
+            var viewport = cornerstone.getViewport(element);
+            var image = enabledElement.image;
             var colormapId = $('#colormaps').val();
-            var minPixelValue = image.minPixelValue || 0;
-            var maxPixelValue = image.maxPixelValue || 255;
             var colormap;
 
             // Use selected the first option ("Select...")
@@ -177,7 +166,8 @@
                 colormap = cornerstone.colors.getColormap(colormapId);
             }
 
-            cornerstone.convertToFalseColorImage(element, colormap);
+            viewport.colormap = colormap;
+            cornerstone.setViewport(element, viewport);
             cornerstone.updateImage(element, true);
 
             // Update the colorbar at the top of the image

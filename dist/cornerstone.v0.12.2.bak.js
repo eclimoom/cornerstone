@@ -558,6 +558,7 @@
                     (0, _storedColorPixelDataToCanvasImageData2.default)(image, colorLut, colorRenderCanvasData.data);
                 }
 
+
                 start = window.performance ? performance.now() : Date.now();
                 colorRenderCanvasContext.putImageData(colorRenderCanvasData, 0, 0);
                 image.stats.lastPutImageDataTime = (window.performance ? performance.now() : Date.now()) - start;
@@ -894,7 +895,6 @@
             function getRenderCanvas(enabledElement, image, invalidated) {
                 if (!enabledElement.renderingTools.grayscaleRenderCanvas) {
                     enabledElement.renderingTools.grayscaleRenderCanvas = document.createElement('canvas');
-                    initializeGrayscaleRenderCanvas(enabledElement, image);
                 }
 
                 var grayscaleRenderCanvas = enabledElement.renderingTools.grayscaleRenderCanvas;
@@ -1858,8 +1858,6 @@
                     image.minPixelValue = pixelValues.minPixelValue;
                     image.maxPixelValue = pixelValues.maxPixelValue;
 
-                    image.windowWidth = 255;
-                    image.windowCenter = 128;
                     // Cache the last colormapId used for performance
                     // Then it doesn't need to be re-rendered on next
                     // Time if the user hasn't updated it
@@ -1880,11 +1878,14 @@
              */
             function convertToFalseColorImage(element, colormap) {
                 var enabledElement = (0, _enabledElements.getEnabledElement)(element);
+
                 return convertImageToFalseColorImage(enabledElement.image, colormap);
             }
 
+
             function convertToFalseColorImageWithWC(element, colormap, windowWidth, windowCenter) {
                 var enabledElement = (0, _enabledElements.getEnabledElement)(element);
+
                 return convertImageToFalseColorImage(enabledElement.image, colormap, windowWidth, windowCenter);
             }
 
@@ -2362,9 +2363,6 @@
 
                 image.rgba = true;
                 image.lut = undefined;
-                image.cachedLut = undefined;
-                image.render = undefined;
-                image.intercept = 0;
                 image.slope = 1;
                 image.minPixelValue = 0;
                 image.maxPixelValue = 255;
@@ -3291,9 +3289,9 @@
 
                     // NOTE: Added Math.floor since values were not integers? Check VTK source
                     if (v < p.Range[0]) {
-                        dIndex = p.MaxIndex + BELOW_RANGE_COLOR_INDEX + 1.5;
+                        dIndex = 0;
                     } else if (v > p.Range[1]) {
-                        dIndex = p.Range[1];//p.MaxIndex + ABOVE_RANGE_COLOR_INDEX + 1.5;
+                        dIndex = p.MaxIndex;//p.MaxIndex + ABOVE_RANGE_COLOR_INDEX + 1.5;
                     } else {
                         dIndex = (v + p.Shift) * p.Scale;
                     }

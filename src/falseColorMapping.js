@@ -54,8 +54,8 @@ function getRestoreImageMethod (image) {
     image.rgba = rgba;
     image.cachedLut = cachedLut;
     image.slope = slope;
-    image.windowWidth = windowWidth;
-    image.windowCenter = windowCenter;
+    image.windowWidth = image.windowWidth || windowWidth;
+    image.windowCenter = image.windowCenter || windowCenter;
     image.minPixelValue = minPixelValue;
     image.maxPixelValue = maxPixelValue;
 
