@@ -1,22 +1,10 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <!-- twitter bootstrap CSS stylesheet - not required by cornerstone -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- cornerstone css - provides some useful css classes -->
-    <link href="../cornerstone.css" rel="stylesheet">
 
 </head>
 <body>
 <div class="container">
-
-    <h1>
-        falseColorMapping/index.html
-    </h1>
-
-    This example shows you how to use the pre-defined colormaps or create a custom lookup table and use them to create a false color mapping
-
     <div class="row">
         <div class="col-xs-10">
             <div style="width:512px; padding-top: 5px;">
@@ -73,19 +61,19 @@
         var $dropdown = $('#colormaps');
         var colormapsList = cornerstone.colors.getColormapsList();
 
-        var addOption = function(id, name, disabled) {
+        var addOption = function (id, name, disabled) {
             var $option = $('<option></option>')
                 .val(id)
                 .text(name)
 
-            if(disabled) {
+            if (disabled) {
                 $option.prop('disabled', true);
             }
 
             $dropdown.append($option);
         }
 
-        colormapsList.forEach(function(colormapItem) {
+        colormapsList.forEach(function (colormapItem) {
             addOption(colormapItem.id, colormapItem.name);
         });
 
@@ -95,22 +83,20 @@
         addOption('custom', 'Custom');
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         // image enable the dicomImage element
         var element = $('#dicomImage').get(0);
         cornerstone.enable(element);
 
         var imageId = 'example://1';
 
-        var windowWidth , windowCenter;
+        var windowWidth, windowCenter;
 
         // Load the example image and display it
-        cornerstone.loadImage(imageId).then(function(image) {
+        cornerstone.loadImage(imageId).then(function (image) {
             cornerstone.displayImage(element, image);
 
             viewport = cornerstone.getViewport(element);
-            $('#bottomright').text("Zoom: " + viewport.scale.toFixed(2) + "x");
-            $('#bottomleft').text("WW/WC:" + Math.round(viewport.voi.windowWidth) + "/" + Math.round(viewport.voi.windowCenter));
 
             // add event handlers to pan image on mouse move
             $('#dicomImage').mousedown(function (e) {
@@ -128,26 +114,14 @@
                     var viewport = cornerstone.getViewport(element);
 
                     if (mouseButton == 1) {
-                        if (windowWidth == undefined && windowCenter == undefined) {
-                            windowWidth = viewport.voi.windowWidth;
-                            windowCenter = viewport.voi.windowCenter;
-                        }
-                        else{
-                            windowWidth += (deltaX / viewport.scale);
-                            windowCenter +=  (deltaY / viewport.scale);
+                        viewport.voi.windowWidth += (deltaX / viewport.scale);
+                        viewport.voi.windowCenter += (deltaY / viewport.scale);
 
-                        }
-                        // var enableElement = cornerstone.getEnabledElement(element).image;
-                         // = viewport.voi.windowWidth;
-                         // = viewport.voi.windowCenter;
-                        console.log(image);
-
-                        // cornerstone.setViewport(element, viewport);
-
-                        // cornerstone.convertToFalseColorImage(element, "jet");
-                        cornerstone.convertToFalseColorImageWithWC(element,  $('#colormaps').val(), windowWidth, windowCenter);
+                        cornerstone.setViewport(element, viewport);
+                        cornerstone.convertToFalseColorImage(element, "jet");
+                        // cornerstone.convertToFalseColorImageWithWC(element,  $('#colormaps').val()|| "jet", windowWidth, windowCenter);
                         cornerstone.updateImage(element, true);
-                        $('#bottomleft').text("WW/WL:" + Math.round(viewport.voi.windowWidth) + "/" + Math.round(viewport.voi.windowCenter));
+                        // $('#bottomleft').text("WW/WL:" + Math.round(viewport.voi.windowWidth) + "/" + Math.round(viewport.voi.windowCenter));
                     }
                 });
 
@@ -163,15 +137,13 @@
         // selected by the user and update the image
         function colormapChanged() {
             var image = cornerstone.getEnabledElement(element).image;
-            var colormapId = $('#colormaps').val();
-            var minPixelValue = image.minPixelValue || 0;
-            var maxPixelValue = image.maxPixelValue || 255;
+            var colormapId = $('#colormaps').val() || "jet";
             var colormap;
 
             // Use selected the first option ("Select...")
             if (colormapId === '') {
                 return;
-            } else if(colormapId == 'custom') {
+            } else if (colormapId == 'custom') {
                 colormap = getCustomLookupTable();
             } else {
                 colormap = cornerstone.colors.getColormap(colormapId);
@@ -181,7 +153,7 @@
             cornerstone.updateImage(element, true);
 
             // Update the colorbar at the top of the image
-            updateColorbar(colormap);
+            // updateColorbar(colormap);
         }
 
         function getCustomLookupTable(minPixelValue, maxPixelValue) {
@@ -193,10 +165,10 @@
             // calling `addColor` would result in duplicated colors.
             colormap.insertColor(0, [188, 252, 201, 255]); // Banana
             colormap.insertColor(1, [245, 222, 179, 255]); // Wheat
-            colormap.insertColor(2, [255, 125,  64, 255]); // Flesh
-            colormap.insertColor(3, [135,  38,  87, 255]); // Raspberry
-            colormap.insertColor(4, [227, 206,  87, 255]); // Mint
-            colormap.insertColor(5, [ 51, 160, 201, 255]); // Peacock
+            colormap.insertColor(2, [255, 125, 64, 255]); // Flesh
+            colormap.insertColor(3, [135, 38, 87, 255]); // Raspberry
+            colormap.insertColor(4, [227, 206, 87, 255]); // Mint
+            colormap.insertColor(5, [51, 160, 201, 255]); // Peacock
 
             return colormap;
         }
@@ -215,25 +187,26 @@
             lookupTable.setTableRange(0, width);
 
             // Update the colorbar pixel by pixel
-            for(var col = 0; col < width; col++) {
+            for (var col = 0; col < width; col++) {
                 var color = lookupTable.mapValue(col);
 
-                for(var row = 0; row < height; row++) {
+                for (var row = 0; row < height; row++) {
                     var pixel = (col + row * width) * 4;
                     colorbar.data[pixel] = color[0];
-                    colorbar.data[pixel+1] = color[1];
-                    colorbar.data[pixel+2] = color[2];
-                    colorbar.data[pixel+3] = color[3];
+                    colorbar.data[pixel + 1] = color[1];
+                    colorbar.data[pixel + 2] = color[2];
+                    colorbar.data[pixel + 3] = color[3];
                 }
             }
 
             ctx.putImageData(colorbar, 0, 0);
         }
 
-        $('#colormaps').change(function() {
+        $('#colormaps').change(function () {
             colormapChanged();
         });
 
+        colormapChanged();
         fillColormapsList();
     });
 

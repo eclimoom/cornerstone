@@ -1,123 +1,85 @@
 /*! cornerstone-core - 0.12.2 - 2017-07-19 | (c) 2016 Chris Hafey | https://github.com/chafey/cornerstone */
 (function webpackUniversalModuleDefinition(root, factory) {
-    if (typeof exports === 'object' && typeof module === 'object')
+    if(typeof exports === 'object' && typeof module === 'object')
         module.exports = factory();
-    else if (typeof define === 'function' && define.amd)
+    else if(typeof define === 'function' && define.amd)
         define("cornerstone", [], factory);
-    else if (typeof exports === 'object')
+    else if(typeof exports === 'object')
         exports["cornerstone"] = factory();
     else
         root["cornerstone"] = factory();
-})(this, function () {
-    return /******/ (function (modules) { // webpackBootstrap
+})(this, function() {
+    return /******/ (function(modules) { // webpackBootstrap
         /******/ 	// The module cache
-        /******/
-        var installedModules = {};
+        /******/ 	var installedModules = {};
         /******/
         /******/ 	// The require function
-        /******/
-        function __webpack_require__(moduleId) {
+        /******/ 	function __webpack_require__(moduleId) {
             /******/
             /******/ 		// Check if module is in cache
-            /******/
-            if (installedModules[moduleId]) {
-                /******/
-                return installedModules[moduleId].exports;
-                /******/
-            }
+            /******/ 		if(installedModules[moduleId]) {
+                /******/ 			return installedModules[moduleId].exports;
+                /******/ 		}
             /******/ 		// Create a new module (and put it into the cache)
-            /******/
-            var module = installedModules[moduleId] = {
-                /******/            i: moduleId,
-                /******/            l: false,
-                /******/            exports: {}
-                /******/
-            };
+            /******/ 		var module = installedModules[moduleId] = {
+                /******/ 			i: moduleId,
+                /******/ 			l: false,
+                /******/ 			exports: {}
+                /******/ 		};
             /******/
             /******/ 		// Execute the module function
-            /******/
-            modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+            /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
             /******/
             /******/ 		// Flag the module as loaded
-            /******/
-            module.l = true;
+            /******/ 		module.l = true;
             /******/
             /******/ 		// Return the exports of the module
-            /******/
-            return module.exports;
-            /******/
-        }
-
+            /******/ 		return module.exports;
+            /******/ 	}
         /******/
         /******/
         /******/ 	// expose the modules object (__webpack_modules__)
-        /******/
-        __webpack_require__.m = modules;
+        /******/ 	__webpack_require__.m = modules;
         /******/
         /******/ 	// expose the module cache
-        /******/
-        __webpack_require__.c = installedModules;
+        /******/ 	__webpack_require__.c = installedModules;
         /******/
         /******/ 	// identity function for calling harmony imports with the correct context
-        /******/
-        __webpack_require__.i = function (value) {
-            return value;
-        };
+        /******/ 	__webpack_require__.i = function(value) { return value; };
         /******/
         /******/ 	// define getter function for harmony exports
-        /******/
-        __webpack_require__.d = function (exports, name, getter) {
-            /******/
-            if (!__webpack_require__.o(exports, name)) {
-                /******/
-                Object.defineProperty(exports, name, {
-                    /******/                configurable: false,
-                    /******/                enumerable: true,
-                    /******/                get: getter
-                    /******/
-                });
-                /******/
-            }
-            /******/
-        };
+        /******/ 	__webpack_require__.d = function(exports, name, getter) {
+            /******/ 		if(!__webpack_require__.o(exports, name)) {
+                /******/ 			Object.defineProperty(exports, name, {
+                    /******/ 				configurable: false,
+                    /******/ 				enumerable: true,
+                    /******/ 				get: getter
+                    /******/ 			});
+                /******/ 		}
+            /******/ 	};
         /******/
         /******/ 	// getDefaultExport function for compatibility with non-harmony modules
-        /******/
-        __webpack_require__.n = function (module) {
-            /******/
-            var getter = module && module.__esModule ?
-                /******/            function getDefault() {
-                    return module['default'];
-                } :
-                /******/            function getModuleExports() {
-                    return module;
-                };
-            /******/
-            __webpack_require__.d(getter, 'a', getter);
-            /******/
-            return getter;
-            /******/
-        };
+        /******/ 	__webpack_require__.n = function(module) {
+            /******/ 		var getter = module && module.__esModule ?
+                /******/ 			function getDefault() { return module['default']; } :
+                /******/ 			function getModuleExports() { return module; };
+            /******/ 		__webpack_require__.d(getter, 'a', getter);
+            /******/ 		return getter;
+            /******/ 	};
         /******/
         /******/ 	// Object.prototype.hasOwnProperty.call
-        /******/
-        __webpack_require__.o = function (object, property) {
-            return Object.prototype.hasOwnProperty.call(object, property);
-        };
+        /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
         /******/
         /******/ 	// __webpack_public_path__
-        /******/
-        __webpack_require__.p = "";
+        /******/ 	__webpack_require__.p = "";
         /******/
         /******/ 	// Load entry module and return exports
-        /******/
-        return __webpack_require__(__webpack_require__.s = 53);
-        /******/
-    })
+        /******/ 	return __webpack_require__(__webpack_require__.s = 53);
+        /******/ })
     /************************************************************************/
-    /******/([
+    /******/ ([
         /* 0 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -310,10 +272,9 @@
                 return enabledElements;
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 1 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -340,14 +301,11 @@
 
             var _drawImage2 = _interopRequireDefault(_drawImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 2 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -363,10 +321,9 @@
                 }
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 3 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -412,10 +369,9 @@
                 return viewport;
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 4 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -432,10 +388,9 @@
                 return Date.now();
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 5 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -466,9 +421,7 @@
 
             var _index2 = _interopRequireDefault(_index);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             function initializeColorRenderCanvas(enabledElement, image) {
                 var colorRenderCanvas = enabledElement.renderingTools.colorRenderCanvas;
@@ -486,9 +439,7 @@
 
                 enabledElement.renderingTools.colorRenderCanvasContext = colorRenderCanvasContext;
                 enabledElement.renderingTools.colorRenderCanvasData = colorRenderCanvasData;
-            }
-
-            /**
+            } /**
              * This module is responsible for drawing an image to an enabled elements canvas element
              */
 
@@ -673,10 +624,9 @@
                 layer.renderingTools.lastRenderedViewport = lastRenderedViewport;
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 6 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -702,14 +652,11 @@
 
             var _calculateTransform2 = _interopRequireDefault(_calculateTransform);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 7 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -723,10 +670,9 @@
 
             exports.default = events;
 
-            /***/
-        }),
+            /***/ }),
         /* 8 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -787,14 +733,11 @@
 
             var _generateLutNew2 = _interopRequireDefault(_generateLutNew);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 9 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -825,9 +768,7 @@
 
             var _index2 = _interopRequireDefault(_index);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             function initializeGrayscaleRenderCanvas(enabledElement, image) {
                 var grayscaleRenderCanvas = enabledElement.renderingTools.grayscaleRenderCanvas;
@@ -846,9 +787,7 @@
 
                 enabledElement.renderingTools.grayscaleRenderCanvasContext = grayscaleRenderCanvasContext;
                 enabledElement.renderingTools.grayscaleRenderCanvasData = grayscaleRenderCanvasData;
-            }
-
-            /**
+            } /**
              * This module is responsible for drawing a grayscale image
              */
 
@@ -1048,10 +987,9 @@
                 layer.renderingTools.lastRenderedViewport = lastRenderedViewport;
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 10 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1070,9 +1008,7 @@
 
             var _textureCache2 = _interopRequireDefault(_textureCache);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             exports.default = {
                 createProgramFromString: _createProgramFromString2.default,
@@ -1086,10 +1022,9 @@
                 isWebGLInitialized: _renderer.isWebGLInitialized
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 11 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1108,14 +1043,11 @@
 
             var _calculateTransform2 = _interopRequireDefault(_calculateTransform);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 12 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1165,14 +1097,11 @@
 
             var _getVOILut2 = _interopRequireDefault(_getVOILut);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 13 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1197,10 +1126,9 @@
              * @return {Number} A long integer value, the request id, that uniquely identifies the entry in the callback list. This is a non-zero value, but you may not make any other assumptions about its value. You can pass this value to window.cancelAnimationFrame() to cancel the refresh callback request.
              */
 
-            /***/
-        }),
+            /***/ }),
         /* 14 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1248,14 +1176,11 @@
 
             var _now2 = _interopRequireDefault(_now);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 15 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1316,14 +1241,11 @@
 
             var _now2 = _interopRequireDefault(_now);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 16 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1357,9 +1279,7 @@
 
             var _updateImage2 = _interopRequireDefault(_updateImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             __webpack_require__(68);
             __webpack_require__(67);
@@ -1577,10 +1497,9 @@
                 });
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 17 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1648,10 +1567,9 @@
 
             var _transform = __webpack_require__(30);
 
-            /***/
-        }),
+            /***/ }),
         /* 18 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1666,9 +1584,7 @@
 
             var _lookupTable2 = _interopRequireDefault(_lookupTable);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             exports.default = {
                 getColormap: _colormap.getColormap,
@@ -1676,10 +1592,9 @@
                 LookupTable: _lookupTable2.default
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 19 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1697,9 +1612,7 @@
 
             var _colormap = __webpack_require__(27);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /**
              * Retrieves the minimum and maximum pixel values from an Array of pixel data
@@ -1814,7 +1727,7 @@
              *
              * @returns {Boolean} - Whether or not the image has been converted to a false color image
              */
-            function convertImageToFalseColorImage(image, colormap, windowWidth, windowCenter) {
+            function convertImageToFalseColorImage(image, colormap) {
                 if (image.color && !image.falseColor) {
                     throw new Error('Color transforms are not implemented yet');
                 }
@@ -1828,7 +1741,7 @@
                 if (image.colormapId === colormapId) {
                     // It has already being converted into a false color image
                     // Using the colormapId passed as parameter
-                    // return false;
+                    return false;
                 }
 
                 // Restore the image attributes updated when converting to a false color image
@@ -1838,10 +1751,6 @@
                 if (colormapId) {
                     var minPixelValue = image.minPixelValue || 0;
                     var maxPixelValue = image.maxPixelValue || 255;
-                    if (windowWidth && windowCenter) {
-                        minPixelValue = windowCenter - windowWidth / 2;
-                        maxPixelValue = windowCenter + windowWidth / 2;
-                    }
 
                     image.restore = getRestoreImageMethod(image);
 
@@ -1880,23 +1789,17 @@
              */
             function convertToFalseColorImage(element, colormap) {
                 var enabledElement = (0, _enabledElements.getEnabledElement)(element);
-                return convertImageToFalseColorImage(enabledElement.image, colormap);
-            }
 
-            function convertToFalseColorImageWithWC(element, colormap, windowWidth, windowCenter) {
-                var enabledElement = (0, _enabledElements.getEnabledElement)(element);
-                return convertImageToFalseColorImage(enabledElement.image, colormap, windowWidth, windowCenter);
+                return convertImageToFalseColorImage(enabledElement.image, colormap);
             }
 
             exports.convertImageToFalseColorImage = convertImageToFalseColorImage;
             exports.convertToFalseColorImage = convertToFalseColorImage;
-            exports.convertToFalseColorImageWithWC = convertToFalseColorImageWithWC;
             exports.restoreImage = restoreImage;
 
-            /***/
-        }),
+            /***/ }),
         /* 20 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1926,9 +1829,7 @@
 
             var _updateImage2 = _interopRequireDefault(_updateImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /**
              * Retrieves the current image dimensions given an enabled element
@@ -1958,10 +1859,9 @@
              * @returns {void}
              */
 
-            /***/
-        }),
+            /***/ }),
         /* 21 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -1995,10 +1895,9 @@
 
             var _enabledElements = __webpack_require__(0);
 
-            /***/
-        }),
+            /***/ }),
         /* 22 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -2019,9 +1918,7 @@
 
             var _events2 = _interopRequireDefault(_events);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /**
              * This module deals with caching images
@@ -2065,7 +1962,6 @@
 
                     return 0;
                 }
-
                 cachedImages.sort(compare);
 
                 // Remove images as necessary)
@@ -2075,7 +1971,7 @@
 
                     removeImagePromise(imageId);
 
-                    $(_events2.default).trigger('CornerstoneImageCachePromiseRemoved', {imageId: imageId});
+                    $(_events2.default).trigger('CornerstoneImageCachePromiseRemoved', { imageId: imageId });
                 }
 
                 var cacheInfo = getCacheInfo();
@@ -2213,10 +2109,9 @@
                 changeImageIdCacheSize: changeImageIdCacheSize
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 23 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -2300,10 +2195,9 @@
                 get: getMetaData
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 24 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -2379,14 +2273,11 @@
 
             var _index2 = _interopRequireDefault(_index);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 25 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -2402,9 +2293,7 @@
 
             var _renderColorImage = __webpack_require__(5);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /**
              * API function to draw a standard web image (PNG, JPG) to an enabledImage
@@ -2457,10 +2346,9 @@
                 }
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 26 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -2502,9 +2390,7 @@
 
             var _updateImage2 = _interopRequireDefault(_updateImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /**
              * This module is responsible for enabling an element to display images with cornerstone
@@ -2547,10 +2433,9 @@
              * @returns {void}
              */
 
-            /***/
-        }),
+            /***/ }),
         /* 27 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -2565,9 +2450,7 @@
 
             var _lookupTable2 = _interopRequireDefault(_lookupTable);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             var COLOR_BLACK = [0, 0, 0, 255];
 
@@ -3021,10 +2904,9 @@
                 };
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 28 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -3051,9 +2933,9 @@
                 this.AlphaRange = [1, 1];
                 this.NaNColor = [128, 0, 0, 255];
                 this.BelowRangeColor = [0, 0, 0, 255];
-                this.UseBelowRangeColor = false;
+                this.UseBelowRangeColor = true;
                 this.AboveRangeColor = [255, 255, 255, 255];
-                this.UseAboveRangeColor = false;
+                this.UseAboveRangeColor = true;
                 this.InputRange = [0, 255];
                 this.Table = [];
 
@@ -3293,7 +3175,7 @@
                     if (v < p.Range[0]) {
                         dIndex = p.MaxIndex + BELOW_RANGE_COLOR_INDEX + 1.5;
                     } else if (v > p.Range[1]) {
-                        dIndex = p.Range[1];//p.MaxIndex + ABOVE_RANGE_COLOR_INDEX + 1.5;
+                        dIndex = p.MaxIndex + ABOVE_RANGE_COLOR_INDEX + 1.5;
                     } else {
                         dIndex = (v + p.Shift) * p.Scale;
                     }
@@ -3367,10 +3249,9 @@
                 };
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 29 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -3416,10 +3297,9 @@
                 };
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 30 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -3428,29 +3308,9 @@
                 value: true
             });
 
-            var _createClass = function () {
-                function defineProperties(target, props) {
-                    for (var i = 0; i < props.length; i++) {
-                        var descriptor = props[i];
-                        descriptor.enumerable = descriptor.enumerable || false;
-                        descriptor.configurable = true;
-                        if ("value" in descriptor) descriptor.writable = true;
-                        Object.defineProperty(target, descriptor.key, descriptor);
-                    }
-                }
+            var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-                return function (Constructor, protoProps, staticProps) {
-                    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-                    if (staticProps) defineProperties(Constructor, staticProps);
-                    return Constructor;
-                };
-            }();
-
-            function _classCallCheck(instance, Constructor) {
-                if (!(instance instanceof Constructor)) {
-                    throw new TypeError("Cannot call a class as a function");
-                }
-            }
+            function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // By Simon Sarris
 // Www.simonsarris.com
@@ -3585,10 +3445,9 @@
                 return Transform;
             }();
 
-            /***/
-        }),
+            /***/ }),
         /* 31 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -3678,10 +3537,9 @@
              * @return {!WebGLProgram}                 A program
              */
 
-            /***/
-        }),
+            /***/ }),
         /* 32 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -3694,9 +3552,7 @@
 
             var _events2 = _interopRequireDefault(_events);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /**
              * This module deals with caching image textures in VRAM for WebGL
@@ -3735,7 +3591,6 @@
 
                     return 0;
                 }
-
                 cachedImages.sort(compare);
 
                 // Remove images as necessary
@@ -3746,7 +3601,7 @@
                     delete imageCache[lastCachedImage.imageId];
                     cachedImages.pop();
 
-                    $(_events2.default).trigger('CornerstoneWebGLTextureRemoved', {imageId: lastCachedImage.imageId});
+                    $(_events2.default).trigger('CornerstoneWebGLTextureRemoved', { imageId: lastCachedImage.imageId });
                 }
 
                 var cacheInfo = getCacheInfo();
@@ -3854,10 +3709,9 @@
                 setMaximumSizeBytes: setMaximumSizeBytes
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 33 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -3881,14 +3735,11 @@
 
             var _getTransform2 = _interopRequireDefault(_getTransform);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 34 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -3930,10 +3781,9 @@
 
             var _enabledElements = __webpack_require__(0);
 
-            /***/
-        }),
+            /***/ }),
         /* 35 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4014,14 +3864,11 @@
 
             var _layers = __webpack_require__(16);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 36 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4046,14 +3893,11 @@
 
             var _drawImage2 = _interopRequireDefault(_drawImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 37 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4080,14 +3924,11 @@
 
             var _drawImage2 = _interopRequireDefault(_drawImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 38 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4181,9 +4022,7 @@
 
             var _index2 = _interopRequireDefault(_index);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             function hasImageOrLayers(enabledElement) {
                 return enabledElement.image !== undefined || enabledElement.layers.length;
@@ -4201,10 +4040,9 @@
              * This module is responsible for enabling an element to display images with cornerstone
              */
 
-            /***/
-        }),
+            /***/ }),
         /* 39 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4250,10 +4088,9 @@
                 delete ee.data[dataType];
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 40 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4274,14 +4111,11 @@
 
             var _getDefaultViewport2 = _interopRequireDefault(_getDefaultViewport);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 41 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4298,10 +4132,9 @@
 
             var _enabledElements = __webpack_require__(0);
 
-            /***/
-        }),
+            /***/ }),
         /* 42 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4328,14 +4161,11 @@
 
             var _getModalityLUT2 = _interopRequireDefault(_getModalityLUT);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 43 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4375,10 +4205,9 @@
 
             var _enabledElements = __webpack_require__(0);
 
-            /***/
-        }),
+            /***/ }),
         /* 44 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4397,9 +4226,7 @@
 
             var _events2 = _interopRequireDefault(_events);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /**
              * This module deals with ImageLoaders, loading images and caching images
@@ -4439,7 +4266,7 @@
 
                 // Broadcast an image loaded event once the image is loaded
                 imagePromise.then(function (image) {
-                    $(_events2.default).trigger('CornerstoneImageLoaded', {image: image});
+                    $(_events2.default).trigger('CornerstoneImageLoaded', { image: image });
                 });
 
                 return imagePromise;
@@ -4525,10 +4352,9 @@
                 return oldImageLoader;
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 45 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4575,9 +4401,7 @@
 
             var _transform = __webpack_require__(30);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             exports.default = {
                 drawImage: _drawImage2.default,
@@ -4592,10 +4416,9 @@
                 Transform: _transform.Transform
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 46 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4618,10 +4441,9 @@
 
             var _enabledElements = __webpack_require__(0);
 
-            /***/
-        }),
+            /***/ }),
         /* 47 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4645,14 +4467,11 @@
 
             var _drawImage2 = _interopRequireDefault(_drawImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 48 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4673,10 +4492,8 @@
                 var clientX = pageX - rect.left - window.pageXOffset;
                 var clientY = pageY - rect.top - window.pageYOffset;
 
-                var pt = {
-                    x: clientX,
-                    y: clientY
-                };
+                var pt = { x: clientX,
+                    y: clientY };
                 var transform = (0, _getTransform2.default)(enabledElement);
 
                 transform.invert();
@@ -4690,14 +4507,11 @@
 
             var _getTransform2 = _interopRequireDefault(_getTransform);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 49 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4719,14 +4533,11 @@
 
             var _getTransform2 = _interopRequireDefault(_getTransform);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 50 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4747,10 +4558,9 @@
                 webImage: _renderWebImage.renderWebImage
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 51 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4776,14 +4586,11 @@
 
             var _updateImage2 = _interopRequireDefault(_updateImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 52 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -4832,9 +4639,7 @@
 
             var _updateImage2 = _interopRequireDefault(_updateImage);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /**
              * This module contains functions to deal with getting and setting the viewport for an enabled element
@@ -4851,10 +4656,9 @@
              * @returns {void}
              */
 
-            /***/
-        }),
+            /***/ }),
         /* 53 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -5333,12 +5137,6 @@
                     return _falseColorMapping.convertToFalseColorImage;
                 }
             });
-            Object.defineProperty(exports, 'convertToFalseColorImageWithWC', {
-                enumerable: true,
-                get: function get() {
-                    return _falseColorMapping.convertToFalseColorImageWithWC;
-                }
-            });
             Object.defineProperty(exports, 'restoreImage', {
                 enumerable: true,
                 get: function get() {
@@ -5355,14 +5153,11 @@
                 }
             });
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 54 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -5420,9 +5215,7 @@
 
             var _setToPixelCoordinateSystem2 = _interopRequireDefault(_setToPixelCoordinateSystem);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // This is used to keep each of the layers' viewports in sync with the active layer
             var syncedViewports = {};
@@ -5530,10 +5323,9 @@
              * @returns {void}
              */
 
-            /***/
-        }),
+            /***/ }),
         /* 55 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -5607,14 +5399,11 @@
 
             var _renderGrayscaleImage = __webpack_require__(9);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 56 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -5631,16 +5420,7 @@
                 return generateLinearVOILUT(windowWidth, windowCenter);
             };
 
-            function _toConsumableArray(arr) {
-                if (Array.isArray(arr)) {
-                    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-                        arr2[i] = arr[i];
-                    }
-                    return arr2;
-                } else {
-                    return Array.from(arr);
-                }
-            }
+            function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
             /* eslint no-bitwise: 0 */
 
@@ -5702,10 +5482,9 @@
              * @return {VOILUTFunction} VOI LUT mapping function
              */
 
-            /***/
-        }),
+            /***/ }),
         /* 57 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -5722,10 +5501,9 @@
                 return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
             };
 
-            /***/
-        }),
+            /***/ }),
         /* 58 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -5771,14 +5549,11 @@
 
             var _now2 = _interopRequireDefault(_now);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            /***/
-        }),
+            /***/ }),
         /* 59 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -5804,9 +5579,7 @@
 
             var _createProgramFromString2 = _interopRequireDefault(_createProgramFromString);
 
-            function _interopRequireDefault(obj) {
-                return obj && obj.__esModule ? obj : {default: obj};
-            }
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /* eslint no-bitwise: 0 */
 
@@ -5817,7 +5590,6 @@
             var isWebGLInitialized = false;
 
             exports.isWebGLInitialized = isWebGLInitialized;
-
             function getRenderCanvas() {
                 return renderCanvas;
             }
@@ -6068,34 +5840,20 @@
                 var shader = getShaderProgram(image);
                 var texture = getImageTexture(image);
                 var parameters = {
-                    u_resolution: {
-                        type: '2f',
-                        value: [image.width, image.height]
-                    },
-                    wc: {
-                        type: 'f',
-                        value: viewport.voi.windowCenter
-                    },
-                    ww: {
-                        type: 'f',
-                        value: viewport.voi.windowWidth
-                    },
-                    slope: {
-                        type: 'f',
-                        value: image.slope
-                    },
-                    intercept: {
-                        type: 'f',
-                        value: image.intercept
-                    },
-                    minPixelValue: {
-                        type: 'f',
-                        value: image.minPixelValue
-                    },
-                    invert: {
-                        type: 'i',
-                        value: viewport.invert ? 1 : 0
-                    }
+                    u_resolution: { type: '2f',
+                        value: [image.width, image.height] },
+                    wc: { type: 'f',
+                        value: viewport.voi.windowCenter },
+                    ww: { type: 'f',
+                        value: viewport.voi.windowWidth },
+                    slope: { type: 'f',
+                        value: image.slope },
+                    intercept: { type: 'f',
+                        value: image.intercept },
+                    minPixelValue: { type: 'f',
+                        value: image.minPixelValue },
+                    invert: { type: 'i',
+                        value: viewport.invert ? 1 : 0 }
                 };
 
                 renderQuad(shader, parameters, texture, image.width, image.height);
@@ -6120,10 +5878,9 @@
                 }
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 60 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -6162,10 +5919,9 @@
             exports.shaders = shaders;
             exports.dataUtilities = dataUtilities;
 
-            /***/
-        }),
+            /***/ }),
         /* 61 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -6232,10 +5988,9 @@
 
             exports.int16Shader = int16Shader;
 
-            /***/
-        }),
+            /***/ }),
         /* 62 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -6294,10 +6049,9 @@
 
             exports.int8Shader = int8Shader;
 
-            /***/
-        }),
+            /***/ }),
         /* 63 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -6369,10 +6123,9 @@
 
             exports.rgbShader = rgbShader;
 
-            /***/
-        }),
+            /***/ }),
         /* 64 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -6438,10 +6191,9 @@
 
             exports.uint16Shader = uint16Shader;
 
-            /***/
-        }),
+            /***/ }),
         /* 65 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -6496,10 +6248,9 @@
 
             exports.uint8Shader = uint8Shader;
 
-            /***/
-        }),
+            /***/ }),
         /* 66 */
-        /***/ (function (module, exports, __webpack_require__) {
+        /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
 
@@ -6509,14 +6260,13 @@
             });
             var vertexShader = exports.vertexShader = 'attribute vec2 a_position;' + 'attribute vec2 a_texCoord;' + 'uniform vec2 u_resolution;' + 'varying vec2 v_texCoord;' + 'void main() {' + 'vec2 zeroToOne = a_position / u_resolution;' + 'vec2 zeroToTwo = zeroToOne * 2.0;' + 'vec2 clipSpace = zeroToTwo - 1.0;' + 'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);' + 'v_texCoord = a_texCoord;' + '}';
 
-            /***/
-        }),
+            /***/ }),
         /* 67 */
-        /***/ (function (module, exports) {
+        /***/ (function(module, exports) {
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
             if (!Array.prototype.findIndex) {
-                Array.prototype.findIndex = function (predicate) {
+                Array.prototype.findIndex = function(predicate) {
                     if (this === null) {
                         throw new TypeError('Array.prototype.findIndex called on null or undefined');
                     }
@@ -6538,14 +6288,13 @@
                 };
             }
 
-            /***/
-        }),
+            /***/ }),
         /* 68 */
-        /***/ (function (module, exports) {
+        /***/ (function(module, exports) {
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
             if (!Array.prototype.find) {
-                Array.prototype.find = function (predicate) {
+                Array.prototype.find = function(predicate) {
                     if (this === null) {
                         throw new TypeError('Array.prototype.find called on null or undefined');
                     }
@@ -6568,8 +6317,7 @@
             }
 
 
-            /***/
-        })
-        /******/]);
+            /***/ })
+        /******/ ]);
 });
 //# sourceMappingURL=cornerstone.js.map
