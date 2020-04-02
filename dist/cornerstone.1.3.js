@@ -1,4 +1,4 @@
-/*! cornerstone-core - 1.1.4 - 2017-12-08 | (c) 2016 Chris Hafey | https://github.com/cornerstonejs/cornerstone */
+/*! cornerstone-core - 1.1.0 - 2017-11-09 | (c) 2016 Chris Hafey | https://github.com/chafey/cornerstone */
 (function webpackUniversalModuleDefinition(root, factory) {
     if(typeof exports === 'object' && typeof module === 'object')
         module.exports = factory();
@@ -304,7 +304,7 @@
             });
             exports.default = triggerEvent;
 
-            var _externalModules = __webpack_require__(34);
+            var _externalModules = __webpack_require__(33);
 
             /**
              * Trigger a CustomEvent
@@ -317,15 +317,7 @@
             function triggerEvent(el, type) {
                 var detail = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-                var event = void 0;
-
-                // This check is needed to polyfill CustomEvent on IE11-
-                if (typeof window.CustomEvent === 'function') {
-                    event = new CustomEvent(type.toLocaleLowerCase(), { detail: detail });
-                } else {
-                    event = document.createEvent('CustomEvent');
-                    event.initCustomEvent(type.toLocaleLowerCase(), true, true, detail);
-                }
+                var event = new CustomEvent(type.toLocaleLowerCase(), { detail: detail });
 
                 // TODO: remove jQuery event triggers
                 _externalModules.external.$(el).trigger(type, detail);
@@ -490,9 +482,9 @@
                 value: true
             });
 
-            var _colormap = __webpack_require__(28);
+            var _colormap = __webpack_require__(27);
 
-            var _lookupTable = __webpack_require__(29);
+            var _lookupTable = __webpack_require__(28);
 
             var _lookupTable2 = _interopRequireDefault(_lookupTable);
 
@@ -521,9 +513,9 @@
 
             var _now2 = _interopRequireDefault(_now);
 
-            var _generateColorLut = __webpack_require__(45);
+            var _generateLut = __webpack_require__(9);
 
-            var _generateColorLut2 = _interopRequireDefault(_generateColorLut);
+            var _generateLut2 = _interopRequireDefault(_generateLut);
 
             var _storedColorPixelDataToCanvasImageData = __webpack_require__(19);
 
@@ -537,19 +529,19 @@
 
             var _setToPixelCoordinateSystem2 = _interopRequireDefault(_setToPixelCoordinateSystem);
 
-            var _index = __webpack_require__(13);
+            var _index = __webpack_require__(14);
 
             var _index2 = _interopRequireDefault(_index);
 
-            var _doesImageNeedToBeRendered = __webpack_require__(12);
+            var _doesImageNeedToBeRendered = __webpack_require__(13);
 
             var _doesImageNeedToBeRendered2 = _interopRequireDefault(_doesImageNeedToBeRendered);
 
-            var _initializeRenderCanvas = __webpack_require__(10);
+            var _initializeRenderCanvas = __webpack_require__(11);
 
             var _initializeRenderCanvas2 = _interopRequireDefault(_initializeRenderCanvas);
 
-            var _saveLastRendered = __webpack_require__(11);
+            var _saveLastRendered = __webpack_require__(12);
 
             var _saveLastRendered2 = _interopRequireDefault(_saveLastRendered);
 
@@ -562,7 +554,7 @@
                 }
 
                 // Lut is invalid or not present, regenerate it and cache it
-                (0, _generateColorLut2.default)(image, viewport.voi.windowWidth, viewport.voi.windowCenter, viewport.invert);
+                (0, _generateLut2.default)(image, viewport.voi.windowWidth, viewport.voi.windowCenter, viewport.invert);
                 image.cachedLut.windowWidth = viewport.voi.windowWidth;
                 image.cachedLut.windowCenter = viewport.voi.windowCenter;
                 image.cachedLut.invert = viewport.invert;
@@ -709,6 +701,56 @@
                 value: true
             });
 
+            exports.default = function (image, windowWidth, windowCenter, invert, modalityLUT, voiLUT) {
+                var maxPixelValue = image.maxPixelValue;
+                var minPixelValue = image.minPixelValue;
+                var offset = Math.min(minPixelValue, 0);
+
+                if (image.cachedLut === undefined) {
+                    var length = maxPixelValue - offset + 1;
+
+                    image.cachedLut = {};
+                    image.cachedLut.lutArray = new Uint8ClampedArray(length);
+                }
+
+                var lut = image.cachedLut.lutArray;
+                var mlutfn = (0, _getModalityLUT2.default)(image.slope, image.intercept, modalityLUT);
+                var vlutfn = (0, _getVOILut2.default)(windowWidth, windowCenter, voiLUT);
+
+                if (invert === true) {
+                    for (var storedValue = minPixelValue; storedValue <= maxPixelValue; storedValue++) {
+                        lut[storedValue + -offset] = 255 - vlutfn(mlutfn(storedValue));
+                    }
+                } else {
+                    for (var _storedValue = minPixelValue; _storedValue <= maxPixelValue; _storedValue++) {
+                        lut[_storedValue + -offset] = vlutfn(mlutfn(_storedValue));
+                    }
+                }
+
+                return lut;
+            };
+
+            var _getModalityLUT = __webpack_require__(26);
+
+            var _getModalityLUT2 = _interopRequireDefault(_getModalityLUT);
+
+            var _getVOILut = __webpack_require__(43);
+
+            var _getVOILut2 = _interopRequireDefault(_getVOILut);
+
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+            /***/ }),
+        /* 10 */
+        /***/ (function(module, exports, __webpack_require__) {
+
+            "use strict";
+
+
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+
             exports.default = function (enabledElement) {
                 // For now we will calculate it every time it is requested.
                 // In the future, we may want to cache it in the enabled element to speed things up.
@@ -722,7 +764,7 @@
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /***/ }),
-        /* 10 */
+        /* 11 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -753,7 +795,7 @@
             };
 
             /***/ }),
-        /* 11 */
+        /* 12 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -784,7 +826,7 @@
             };
 
             /***/ }),
-        /* 12 */
+        /* 13 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -802,7 +844,7 @@
             };
 
             /***/ }),
-        /* 13 */
+        /* 14 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -814,11 +856,11 @@
 
             var _renderer = __webpack_require__(47);
 
-            var _createProgramFromString = __webpack_require__(35);
+            var _createProgramFromString = __webpack_require__(34);
 
             var _createProgramFromString2 = _interopRequireDefault(_createProgramFromString);
 
-            var _textureCache = __webpack_require__(33);
+            var _textureCache = __webpack_require__(32);
 
             var _textureCache2 = _interopRequireDefault(_textureCache);
 
@@ -846,7 +888,7 @@
             exports.default = mod;
 
             /***/ }),
-        /* 14 */
+        /* 15 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -918,7 +960,7 @@
             exports.default = events;
 
             /***/ }),
-        /* 15 */
+        /* 16 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -934,7 +976,7 @@
 
             var _storedPixelDataToCanvasImageData2 = _interopRequireDefault(_storedPixelDataToCanvasImageData);
 
-            var _storedPixelDataToCanvasImageDataRGBA = __webpack_require__(30);
+            var _storedPixelDataToCanvasImageDataRGBA = __webpack_require__(29);
 
             var _storedPixelDataToCanvasImageDataRGBA2 = _interopRequireDefault(_storedPixelDataToCanvasImageDataRGBA);
 
@@ -946,23 +988,23 @@
 
             var _now2 = _interopRequireDefault(_now);
 
-            var _index = __webpack_require__(13);
+            var _index = __webpack_require__(14);
 
             var _index2 = _interopRequireDefault(_index);
 
-            var _getLut = __webpack_require__(32);
+            var _getLut = __webpack_require__(31);
 
             var _getLut2 = _interopRequireDefault(_getLut);
 
-            var _doesImageNeedToBeRendered = __webpack_require__(12);
+            var _doesImageNeedToBeRendered = __webpack_require__(13);
 
             var _doesImageNeedToBeRendered2 = _interopRequireDefault(_doesImageNeedToBeRendered);
 
-            var _initializeRenderCanvas = __webpack_require__(10);
+            var _initializeRenderCanvas = __webpack_require__(11);
 
             var _initializeRenderCanvas2 = _interopRequireDefault(_initializeRenderCanvas);
 
-            var _saveLastRendered = __webpack_require__(11);
+            var _saveLastRendered = __webpack_require__(12);
 
             var _saveLastRendered2 = _interopRequireDefault(_saveLastRendered);
 
@@ -1095,56 +1137,6 @@
 
                 layer.renderingTools = (0, _saveLastRendered2.default)(layer);
             }
-
-            /***/ }),
-        /* 16 */
-        /***/ (function(module, exports, __webpack_require__) {
-
-            "use strict";
-
-
-            Object.defineProperty(exports, "__esModule", {
-                value: true
-            });
-
-            exports.default = function (image, windowWidth, windowCenter, invert, modalityLUT, voiLUT) {
-                var maxPixelValue = image.maxPixelValue;
-                var minPixelValue = image.minPixelValue;
-                var offset = Math.min(minPixelValue, 0);
-
-                if (image.cachedLut === undefined) {
-                    var length = maxPixelValue - offset + 1;
-
-                    image.cachedLut = {};
-                    image.cachedLut.lutArray = new Uint8ClampedArray(length);
-                }
-
-                var lut = image.cachedLut.lutArray;
-                var mlutfn = (0, _getModalityLUT2.default)(image.slope, image.intercept, modalityLUT);
-                var vlutfn = (0, _getVOILut2.default)(windowWidth, windowCenter, voiLUT);
-
-                if (invert === true) {
-                    for (var storedValue = minPixelValue; storedValue <= maxPixelValue; storedValue++) {
-                        lut[storedValue + -offset] = 255 - vlutfn(mlutfn(storedValue));
-                    }
-                } else {
-                    for (var _storedValue = minPixelValue; _storedValue <= maxPixelValue; _storedValue++) {
-                        lut[_storedValue + -offset] = vlutfn(mlutfn(_storedValue));
-                    }
-                }
-
-                return lut;
-            };
-
-            var _getModalityLUT = __webpack_require__(26);
-
-            var _getModalityLUT2 = _interopRequireDefault(_getModalityLUT);
-
-            var _getVOILut = __webpack_require__(27);
-
-            var _getVOILut2 = _interopRequireDefault(_getVOILut);
-
-            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /***/ }),
         /* 17 */
@@ -1508,7 +1500,7 @@
                 return transform;
             };
 
-            var _transform = __webpack_require__(31);
+            var _transform = __webpack_require__(30);
 
             /***/ }),
         /* 23 */
@@ -1531,15 +1523,15 @@
 
             var _now2 = _interopRequireDefault(_now);
 
-            var _initializeRenderCanvas = __webpack_require__(10);
+            var _initializeRenderCanvas = __webpack_require__(11);
 
             var _initializeRenderCanvas2 = _interopRequireDefault(_initializeRenderCanvas);
 
-            var _saveLastRendered = __webpack_require__(11);
+            var _saveLastRendered = __webpack_require__(12);
 
             var _saveLastRendered2 = _interopRequireDefault(_saveLastRendered);
 
-            var _doesImageNeedToBeRendered = __webpack_require__(12);
+            var _doesImageNeedToBeRendered = __webpack_require__(13);
 
             var _doesImageNeedToBeRendered2 = _interopRequireDefault(_doesImageNeedToBeRendered);
 
@@ -1705,19 +1697,19 @@
 
             var _now2 = _interopRequireDefault(_now);
 
-            var _initializeRenderCanvas = __webpack_require__(10);
+            var _initializeRenderCanvas = __webpack_require__(11);
 
             var _initializeRenderCanvas2 = _interopRequireDefault(_initializeRenderCanvas);
 
-            var _getLut = __webpack_require__(32);
+            var _getLut = __webpack_require__(31);
 
             var _getLut2 = _interopRequireDefault(_getLut);
 
-            var _saveLastRendered = __webpack_require__(11);
+            var _saveLastRendered = __webpack_require__(12);
 
             var _saveLastRendered2 = _interopRequireDefault(_saveLastRendered);
 
-            var _doesImageNeedToBeRendered = __webpack_require__(12);
+            var _doesImageNeedToBeRendered = __webpack_require__(13);
 
             var _doesImageNeedToBeRendered2 = _interopRequireDefault(_doesImageNeedToBeRendered);
 
@@ -1891,6 +1883,10 @@
 
             var _enabledElements = __webpack_require__(0);
 
+            var _metaData = __webpack_require__(36);
+
+            var _metaData2 = _interopRequireDefault(_metaData);
+
             var _getDefaultViewport = __webpack_require__(6);
 
             var _getDefaultViewport2 = _interopRequireDefault(_getDefaultViewport);
@@ -1951,9 +1947,17 @@
                     return;
                 }
 
+                // TODO: Use row and column pixel spacing from image object
+                var baseImagePlane = _metaData2.default.get('imagePlane', baseImage.imageId);
+                var targetImagePlane = _metaData2.default.get('imagePlane', targetImage.imageId);
+
+                if (!baseImagePlane || !baseImagePlane.columnPixelSpacing || !targetImagePlane || !targetImagePlane.columnPixelSpacing) {
+                    return;
+                }
+
                 // Column pixel spacing need to be considered when calculating the
                 // ratio between the layer added and base layer images
-                var colRelative = targetImage.columnPixelSpacing * targetImage.width / (baseImage.columnPixelSpacing * baseImage.width);
+                var colRelative = targetImagePlane.columnPixelSpacing * targetImage.width / (baseImagePlane.columnPixelSpacing * baseImage.width);
                 var viewportRatio = targetLayer.viewport.scale / baseLayer.viewport.scale * colRelative;
 
                 targetLayer.viewport.scale = baseLayer.viewport.scale * viewportRatio;
@@ -2257,91 +2261,10 @@
             Object.defineProperty(exports, "__esModule", {
                 value: true
             });
-
-            exports.default = function (windowWidth, windowCenter, voiLUT) {
-                if (voiLUT) {
-                    return generateNonLinearVOILUT(voiLUT);
-                }
-
-                return generateLinearVOILUT(windowWidth, windowCenter);
-            };
-
-            function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-            /* eslint no-bitwise: 0 */
-
-            /**
-             * Volume of Interest Lookup Table Function
-             *
-             * @typedef {Function} VOILUTFunction
-             *
-             * @param {Number} modalityLutValue
-             * @returns {Number} transformed value
-             */
-
-            /**
-             *
-             * @param {Number} windowWidth Window Width
-             * @param {Number} windowCenter Window Center
-             * @returns {VOILUTFunction} VOI LUT mapping function
-             */
-            function generateLinearVOILUT(windowWidth, windowCenter) {
-                return function (modalityLutValue) {
-                    return ((modalityLutValue - windowCenter) / windowWidth + 0.5) * 255.0;
-                };
-            }
-
-            /**
-             * Generate a non-linear volume of interest lookup table
-             *
-             * @param {LUT} voiLUT Volume of Interest Lookup Table Object
-             *
-             * @returns {VOILUTFunction} VOI LUT mapping function
-             */
-            function generateNonLinearVOILUT(voiLUT) {
-                // We don't trust the voiLUT.numBitsPerEntry, mainly thanks to Agfa!
-                var bitsPerEntry = Math.max.apply(Math, _toConsumableArray(voiLUT.lut)).toString(2).length;
-                var shift = bitsPerEntry - 8;
-                var minValue = voiLUT.lut[0] >> shift;
-                var maxValue = voiLUT.lut[voiLUT.lut.length - 1] >> shift;
-                var maxValueMapped = voiLUT.firstValueMapped + voiLUT.lut.length - 1;
-
-                return function (modalityLutValue) {
-                    if (modalityLutValue < voiLUT.firstValueMapped) {
-                        return minValue;
-                    } else if (modalityLutValue >= maxValueMapped) {
-                        return maxValue;
-                    }
-
-                    return voiLUT.lut[modalityLutValue - voiLUT.firstValueMapped] >> shift;
-                };
-            }
-
-            /**
-             * Retrieve a VOI LUT mapping function given the current windowing settings
-             * and the VOI LUT for the image
-             *
-             * @param {Number} windowWidth Window Width
-             * @param {Number} windowCenter Window Center
-             * @param {LUT} [voiLUT] Volume of Interest Lookup Table Object
-             *
-             * @return {VOILUTFunction} VOI LUT mapping function
-             */
-
-            /***/ }),
-        /* 28 */
-        /***/ (function(module, exports, __webpack_require__) {
-
-            "use strict";
-
-
-            Object.defineProperty(exports, "__esModule", {
-                value: true
-            });
             exports.getColormapsList = getColormapsList;
             exports.getColormap = getColormap;
 
-            var _lookupTable = __webpack_require__(29);
+            var _lookupTable = __webpack_require__(28);
 
             var _lookupTable2 = _interopRequireDefault(_lookupTable);
 
@@ -2799,7 +2722,7 @@
             }
 
             /***/ }),
-        /* 29 */
+        /* 28 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -3172,7 +3095,7 @@
             exports.default = LookupTable;
 
             /***/ }),
-        /* 30 */
+        /* 29 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -3253,7 +3176,7 @@
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /***/ }),
-        /* 31 */
+        /* 30 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -3401,7 +3324,7 @@
             }();
 
             /***/ }),
-        /* 32 */
+        /* 31 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -3429,18 +3352,18 @@
                 return image.cachedLut.lutArray;
             };
 
-            var _lutMatches = __webpack_require__(44);
+            var _lutMatches = __webpack_require__(45);
 
             var _lutMatches2 = _interopRequireDefault(_lutMatches);
 
-            var _generateLut = __webpack_require__(16);
+            var _generateLut = __webpack_require__(9);
 
             var _generateLut2 = _interopRequireDefault(_generateLut);
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /***/ }),
-        /* 33 */
+        /* 32 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -3450,7 +3373,7 @@
                 value: true
             });
 
-            var _events = __webpack_require__(14);
+            var _events = __webpack_require__(15);
 
             var _events2 = _interopRequireDefault(_events);
 
@@ -3616,7 +3539,7 @@
             };
 
             /***/ }),
-        /* 34 */
+        /* 33 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -3639,7 +3562,7 @@
             exports.external = external;
 
             /***/ }),
-        /* 35 */
+        /* 34 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -3731,7 +3654,7 @@
              */
 
             /***/ }),
-        /* 36 */
+        /* 35 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -3796,6 +3719,92 @@
                     (0, _renderColorImage.renderColorImage)(enabledElement, invalidated);
                 }
             }
+
+            /***/ }),
+        /* 36 */
+        /***/ (function(module, exports, __webpack_require__) {
+
+            "use strict";
+
+
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+            exports.addProvider = addProvider;
+            exports.removeProvider = removeProvider;
+// This module defines a way to access various metadata about an imageId.  This layer of abstraction exists
+// So metadata can be provided in different ways (e.g. by parsing DICOM P10 or by a WADO-RS document)
+
+            var providers = [];
+
+            /**
+             * Adds a metadata provider with the specified priority
+             * @param {Function} provider Metadata provider function
+             * @param {Number} [priority=0] - 0 is default/normal, > 0 is high, < 0 is low
+             *
+             * @returns {void}
+             */
+            function addProvider(provider) {
+                var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+                var i = void 0;
+
+                // Find the right spot to insert this provider based on priority
+                for (i = 0; i < providers.length; i++) {
+                    if (providers[i].priority <= priority) {
+                        break;
+                    }
+                }
+
+                // Insert the decode task at position i
+                providers.splice(i, 0, {
+                    priority: priority,
+                    provider: provider
+                });
+            }
+
+            /**
+             * Removes the specified provider
+             *
+             * @param {Function} provider Metadata provider function
+             *
+             * @returns {void}
+             */
+            function removeProvider(provider) {
+                for (var i = 0; i < providers.length; i++) {
+                    if (providers[i].provider === provider) {
+                        providers.splice(i, 1);
+
+                        break;
+                    }
+                }
+            }
+
+            /**
+             * Gets metadata from the registered metadata providers.  Will call each one from highest priority to lowest
+             * until one responds
+             *
+             * @param {String} type The type of metadata requested from the metadata store
+             * @param {String} imageId The Cornerstone Image Object's imageId
+             *
+             * @returns {*} The metadata retrieved from the metadata store
+             */
+            function getMetaData(type, imageId) {
+                // Invoke each provider in priority order until one returns something
+                for (var i = 0; i < providers.length; i++) {
+                    var result = providers[i].provider(type, imageId);
+
+                    if (result !== undefined) {
+                        return result;
+                    }
+                }
+            }
+
+            exports.default = {
+                addProvider: addProvider,
+                removeProvider: removeProvider,
+                get: getMetaData
+            };
 
             /***/ }),
         /* 37 */
@@ -4011,7 +4020,7 @@
             exports.purgeCache = purgeCache;
             exports.changeImageIdCacheSize = changeImageIdCacheSize;
 
-            var _events = __webpack_require__(14);
+            var _events = __webpack_require__(15);
 
             var _events2 = _interopRequireDefault(_events);
 
@@ -4336,7 +4345,7 @@
                 }
             });
 
-            var _generateLut = __webpack_require__(16);
+            var _generateLut = __webpack_require__(9);
 
             Object.defineProperty(exports, 'generateLut', {
                 enumerable: true,
@@ -4399,7 +4408,7 @@
                 }
             });
 
-            var _index = __webpack_require__(43);
+            var _index = __webpack_require__(44);
 
             Object.defineProperty(exports, 'internal', {
                 enumerable: true,
@@ -4435,7 +4444,7 @@
                 }
             });
 
-            var _renderGrayscaleImage = __webpack_require__(15);
+            var _renderGrayscaleImage = __webpack_require__(16);
 
             Object.defineProperty(exports, 'renderGrayscaleImage', {
                 enumerable: true,
@@ -4444,7 +4453,7 @@
                 }
             });
 
-            var _renderWebImage = __webpack_require__(36);
+            var _renderWebImage = __webpack_require__(35);
 
             Object.defineProperty(exports, 'renderWebImage', {
                 enumerable: true,
@@ -4789,7 +4798,7 @@
                 }
             });
 
-            var _metaData = __webpack_require__(77);
+            var _metaData = __webpack_require__(36);
 
             Object.defineProperty(exports, 'metaData', {
                 enumerable: true,
@@ -4798,7 +4807,7 @@
                 }
             });
 
-            var _index3 = __webpack_require__(13);
+            var _index3 = __webpack_require__(14);
 
             Object.defineProperty(exports, 'webGL', {
                 enumerable: true,
@@ -4816,7 +4825,7 @@
                 }
             });
 
-            var _falseColorMapping = __webpack_require__(78);
+            var _falseColorMapping = __webpack_require__(77);
 
             Object.defineProperty(exports, 'convertImageToFalseColorImage', {
                 enumerable: true,
@@ -4837,7 +4846,7 @@
                 }
             });
 
-            var _events = __webpack_require__(14);
+            var _events = __webpack_require__(15);
 
             Object.defineProperty(exports, 'events', {
                 enumerable: true,
@@ -4846,16 +4855,7 @@
                 }
             });
 
-            var _triggerEvent = __webpack_require__(2);
-
-            Object.defineProperty(exports, 'triggerEvent', {
-                enumerable: true,
-                get: function get() {
-                    return _interopRequireDefault(_triggerEvent).default;
-                }
-            });
-
-            var _externalModules = __webpack_require__(34);
+            var _externalModules = __webpack_require__(33);
 
             Object.defineProperty(exports, 'external', {
                 enumerable: true,
@@ -4877,11 +4877,92 @@
                 value: true
             });
 
+            exports.default = function (windowWidth, windowCenter, voiLUT) {
+                if (voiLUT) {
+                    return generateNonLinearVOILUT(voiLUT);
+                }
+
+                return generateLinearVOILUT(windowWidth, windowCenter);
+            };
+
+            function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+            /* eslint no-bitwise: 0 */
+
+            /**
+             * Volume of Interest Lookup Table Function
+             *
+             * @typedef {Function} VOILUTFunction
+             *
+             * @param {Number} modalityLutValue
+             * @returns {Number} transformed value
+             */
+
+            /**
+             *
+             * @param {Number} windowWidth Window Width
+             * @param {Number} windowCenter Window Center
+             * @returns {VOILUTFunction} VOI LUT mapping function
+             */
+            function generateLinearVOILUT(windowWidth, windowCenter) {
+                return function (modalityLutValue) {
+                    return ((modalityLutValue - windowCenter) / windowWidth + 0.5) * 255.0;
+                };
+            }
+
+            /**
+             * Generate a non-linear volume of interest lookup table
+             *
+             * @param {LUT} voiLUT Volume of Interest Lookup Table Object
+             *
+             * @returns {VOILUTFunction} VOI LUT mapping function
+             */
+            function generateNonLinearVOILUT(voiLUT) {
+                // We don't trust the voiLUT.numBitsPerEntry, mainly thanks to Agfa!
+                var bitsPerEntry = Math.max.apply(Math, _toConsumableArray(voiLUT.lut)).toString(2).length;
+                var shift = bitsPerEntry - 8;
+                var minValue = voiLUT.lut[0] >> shift;
+                var maxValue = voiLUT.lut[voiLUT.lut.length - 1] >> shift;
+                var maxValueMapped = voiLUT.firstValueMapped + voiLUT.lut.length - 1;
+
+                return function (modalityLutValue) {
+                    if (modalityLutValue < voiLUT.firstValueMapped) {
+                        return minValue;
+                    } else if (modalityLutValue >= maxValueMapped) {
+                        return maxValue;
+                    }
+
+                    return voiLUT.lut[modalityLutValue - voiLUT.firstValueMapped] >> shift;
+                };
+            }
+
+            /**
+             * Retrieve a VOI LUT mapping function given the current windowing settings
+             * and the VOI LUT for the image
+             *
+             * @param {Number} windowWidth Window Width
+             * @param {Number} windowCenter Window Center
+             * @param {LUT} [voiLUT] Volume of Interest Lookup Table Object
+             *
+             * @return {VOILUTFunction} VOI LUT mapping function
+             */
+
+            /***/ }),
+        /* 44 */
+        /***/ (function(module, exports, __webpack_require__) {
+
+            "use strict";
+
+
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+
             var _drawImage = __webpack_require__(5);
 
             var _drawImage2 = _interopRequireDefault(_drawImage);
 
-            var _generateLut = __webpack_require__(16);
+            var _generateLut = __webpack_require__(9);
 
             var _generateLut2 = _interopRequireDefault(_generateLut);
 
@@ -4897,7 +4978,7 @@
 
             var _storedPixelDataToCanvasImageData2 = _interopRequireDefault(_storedPixelDataToCanvasImageData);
 
-            var _storedPixelDataToCanvasImageDataRGBA = __webpack_require__(30);
+            var _storedPixelDataToCanvasImageDataRGBA = __webpack_require__(29);
 
             var _storedPixelDataToCanvasImageDataRGBA2 = _interopRequireDefault(_storedPixelDataToCanvasImageDataRGBA);
 
@@ -4913,7 +4994,7 @@
 
             var _storedPixelDataToCanvasImageDataPseudocolorLUT2 = _interopRequireDefault(_storedPixelDataToCanvasImageDataPseudocolorLUT);
 
-            var _getTransform = __webpack_require__(9);
+            var _getTransform = __webpack_require__(10);
 
             var _getTransform2 = _interopRequireDefault(_getTransform);
 
@@ -4921,7 +5002,7 @@
 
             var _calculateTransform2 = _interopRequireDefault(_calculateTransform);
 
-            var _transform = __webpack_require__(31);
+            var _transform = __webpack_require__(30);
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4941,7 +5022,7 @@
             };
 
             /***/ }),
-        /* 44 */
+        /* 45 */
         /***/ (function(module, exports, __webpack_require__) {
 
             "use strict";
@@ -4964,51 +5045,6 @@
                 // Check the unique ids
                 return a.id === b.id;
             };
-
-            /***/ }),
-        /* 45 */
-        /***/ (function(module, exports, __webpack_require__) {
-
-            "use strict";
-
-
-            Object.defineProperty(exports, "__esModule", {
-                value: true
-            });
-
-            exports.default = function (image, windowWidth, windowCenter, invert, voiLUT) {
-                var maxPixelValue = image.maxPixelValue;
-                var minPixelValue = image.minPixelValue;
-                var offset = Math.min(minPixelValue, 0);
-
-                if (image.cachedLut === undefined) {
-                    var length = maxPixelValue - offset + 1;
-
-                    image.cachedLut = {};
-                    image.cachedLut.lutArray = new Uint8ClampedArray(length);
-                }
-
-                var lut = image.cachedLut.lutArray;
-                var vlutfn = (0, _getVOILut2.default)(windowWidth, windowCenter, voiLUT);
-
-                if (invert === true) {
-                    for (var storedValue = minPixelValue; storedValue <= maxPixelValue; storedValue++) {
-                        lut[storedValue + -offset] = 255 - vlutfn(storedValue);
-                    }
-                } else {
-                    for (var _storedValue = minPixelValue; _storedValue <= maxPixelValue; _storedValue++) {
-                        lut[_storedValue + -offset] = vlutfn(_storedValue);
-                    }
-                }
-
-                return lut;
-            };
-
-            var _getVOILut = __webpack_require__(27);
-
-            var _getVOILut2 = _interopRequireDefault(_getVOILut);
-
-            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /***/ }),
         /* 46 */
@@ -5080,11 +5116,11 @@
 
             var _vertexShader = __webpack_require__(54);
 
-            var _textureCache = __webpack_require__(33);
+            var _textureCache = __webpack_require__(32);
 
             var _textureCache2 = _interopRequireDefault(_textureCache);
 
-            var _createProgramFromString = __webpack_require__(35);
+            var _createProgramFromString = __webpack_require__(34);
 
             var _createProgramFromString2 = _interopRequireDefault(_createProgramFromString);
 
@@ -5782,7 +5818,7 @@
 
             var _enabledElements = __webpack_require__(0);
 
-            var _getTransform = __webpack_require__(9);
+            var _getTransform = __webpack_require__(10);
 
             var _getTransform2 = _interopRequireDefault(_getTransform);
 
@@ -6104,7 +6140,7 @@
 
             var _requestAnimationFrame2 = _interopRequireDefault(_requestAnimationFrame);
 
-            var _index = __webpack_require__(13);
+            var _index = __webpack_require__(14);
 
             var _index2 = _interopRequireDefault(_index);
 
@@ -6213,7 +6249,7 @@
 
             var _renderColorImage = __webpack_require__(8);
 
-            var _renderGrayscaleImage = __webpack_require__(15);
+            var _renderGrayscaleImage = __webpack_require__(16);
 
             var _renderPseudoColorImage = __webpack_require__(24);
 
@@ -6277,7 +6313,7 @@
 
             var _layers = __webpack_require__(25);
 
-            var _renderGrayscaleImage = __webpack_require__(15);
+            var _renderGrayscaleImage = __webpack_require__(16);
 
             var _renderColorImage = __webpack_require__(8);
 
@@ -6569,7 +6605,7 @@
 
             var _imageCache = __webpack_require__(40);
 
-            var _events = __webpack_require__(14);
+            var _events = __webpack_require__(15);
 
             var _events2 = _interopRequireDefault(_events);
 
@@ -6797,7 +6833,7 @@
 
             var _enabledElements = __webpack_require__(0);
 
-            var _getTransform = __webpack_require__(9);
+            var _getTransform = __webpack_require__(10);
 
             var _getTransform2 = _interopRequireDefault(_getTransform);
 
@@ -6823,7 +6859,7 @@
 
             var _enabledElements = __webpack_require__(0);
 
-            var _getTransform = __webpack_require__(9);
+            var _getTransform = __webpack_require__(10);
 
             var _getTransform2 = _interopRequireDefault(_getTransform);
 
@@ -6935,9 +6971,9 @@
 
             var _renderColorImage = __webpack_require__(8);
 
-            var _renderGrayscaleImage = __webpack_require__(15);
+            var _renderGrayscaleImage = __webpack_require__(16);
 
-            var _renderWebImage = __webpack_require__(36);
+            var _renderWebImage = __webpack_require__(35);
 
             exports.default = {
                 colorImage: _renderColorImage.renderColorImage,
@@ -6955,92 +6991,6 @@
             Object.defineProperty(exports, "__esModule", {
                 value: true
             });
-            exports.addProvider = addProvider;
-            exports.removeProvider = removeProvider;
-// This module defines a way to access various metadata about an imageId.  This layer of abstraction exists
-// So metadata can be provided in different ways (e.g. by parsing DICOM P10 or by a WADO-RS document)
-
-            var providers = [];
-
-            /**
-             * Adds a metadata provider with the specified priority
-             * @param {Function} provider Metadata provider function
-             * @param {Number} [priority=0] - 0 is default/normal, > 0 is high, < 0 is low
-             *
-             * @returns {void}
-             */
-            function addProvider(provider) {
-                var priority = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-                var i = void 0;
-
-                // Find the right spot to insert this provider based on priority
-                for (i = 0; i < providers.length; i++) {
-                    if (providers[i].priority <= priority) {
-                        break;
-                    }
-                }
-
-                // Insert the decode task at position i
-                providers.splice(i, 0, {
-                    priority: priority,
-                    provider: provider
-                });
-            }
-
-            /**
-             * Removes the specified provider
-             *
-             * @param {Function} provider Metadata provider function
-             *
-             * @returns {void}
-             */
-            function removeProvider(provider) {
-                for (var i = 0; i < providers.length; i++) {
-                    if (providers[i].provider === provider) {
-                        providers.splice(i, 1);
-
-                        break;
-                    }
-                }
-            }
-
-            /**
-             * Gets metadata from the registered metadata providers.  Will call each one from highest priority to lowest
-             * until one responds
-             *
-             * @param {String} type The type of metadata requested from the metadata store
-             * @param {String} imageId The Cornerstone Image Object's imageId
-             *
-             * @returns {*} The metadata retrieved from the metadata store
-             */
-            function getMetaData(type, imageId) {
-                // Invoke each provider in priority order until one returns something
-                for (var i = 0; i < providers.length; i++) {
-                    var result = providers[i].provider(type, imageId);
-
-                    if (result !== undefined) {
-                        return result;
-                    }
-                }
-            }
-
-            exports.default = {
-                addProvider: addProvider,
-                removeProvider: removeProvider,
-                get: getMetaData
-            };
-
-            /***/ }),
-        /* 78 */
-        /***/ (function(module, exports, __webpack_require__) {
-
-            "use strict";
-
-
-            Object.defineProperty(exports, "__esModule", {
-                value: true
-            });
             exports.restoreImage = exports.convertToFalseColorImage = exports.convertImageToFalseColorImage = undefined;
 
             var _enabledElements = __webpack_require__(0);
@@ -7049,7 +6999,7 @@
 
             var _pixelDataToFalseColorData2 = _interopRequireDefault(_pixelDataToFalseColorData);
 
-            var _colormap = __webpack_require__(28);
+            var _colormap = __webpack_require__(27);
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

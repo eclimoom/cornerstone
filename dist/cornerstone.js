@@ -93,7 +93,131 @@
             exports.getEnabledElements = getEnabledElements;
             var enabledElements = [];
 
+            /**
+             * A two-dimensional vector
+             *
+             * @typedef {Object} vec2
+             * @param {Number} x - The x distance
+             * @param {Number} y - The y distance
+             */
 
+            /**
+             * VOI
+             *
+             * @typedef {Object} VOI
+             * @param {Number} windowWidth - Window Width for display
+             * @param {Number} windowCenter - Window Center for display
+             */
+
+            /**
+             * Lookup Table Array
+             *
+             * @typedef {Object} LUT
+             * @property {Number} firstValueMapped
+             * @property {Number} numBitsPerEntry
+             * @property {Array} lut
+             */
+
+            /**
+             * Image Statistics Object
+             *
+             * @typedef {Object} ImageStats
+             *
+             * @property {Number} [lastGetPixelDataTime] The time in ms taken to retrieve stored pixels required to draw the image
+             * @property {Number} [lastStoredPixelDataToCanvasImageDataTime] The time in ms taken to map from stored pixel array to canvas pixel array
+             * @property {Number} [lastPutImageDataTime] The time in ms taken for putImageData to put the canvas pixel data into the canvas context
+             * @property {Number} [lastRenderTime] The total time in ms taken for the entire rendering function to run
+             * @property {Number} [lastLutGenerateTime] The time in ms taken to generate the lookup table for the image
+             */
+
+            /**
+             * An Image Object in Cornerstone
+             *
+             * @typedef {Object} Image
+             *
+             * @property {string} imageId - The imageId associated with this image object
+             * @property {Number} minPixelValue - the minimum stored pixel value in the image
+             * @property {Number} maxPixelValue - the maximum stored pixel value in the image
+             * @property {Number} slope - the rescale slope to convert stored pixel values to modality pixel values or 1 if not specified
+             * @property {Number} intercept - the rescale intercept used to convert stored pixel values to modality values or 0 if not specified
+             * @property {Number} windowCenter - the default windowCenter to apply to the image
+             * @property {Number} windowWidth - the default windowWidth to apply to the image
+             * @property {function} getPixelData - a function that returns the underlying pixel data. An array of integers for grayscale and an array of RGBA for color
+             * @property {function} getImageData - a function that returns a canvas imageData object for the image. This is only needed for color images
+             * @property {function} getCanvas - a function that returns a canvas element with the image loaded into it. This is only needed for color images.
+             * @property {function} getImage - a function that returns a JavaScript Image object with the image data. This is optional and typically used for images encoded in standard web JPEG and PNG formats
+             * @property {Number} rows - number of rows in the image. This is the same as height but duplicated for convenience
+             * @property {Number} columns - number of columns in the image. This is the same as width but duplicated for convenience
+             * @property {Number} height - the height of the image. This is the same as rows but duplicated for convenience
+             * @property {Number} width - the width of the image. This is the same as columns but duplicated for convenience
+             * @property {Boolean} color - true if pixel data is RGB, false if grayscale
+             * @property {Object} lut - The Lookup Table
+             * @property {Boolean} rgba - Is the color pixel data stored in RGBA?
+             * @property {Number} columnPixelSpacing - horizontal distance between the middle of each pixel (or width of each pixel) in mm or undefined if not known
+             * @property {Number} rowPixelSpacing - vertical distance between the middle of each pixel (or heigh of each pixel) in mm or undefined if not known
+             * @property {Boolean} invert - true if the the image should initially be displayed be inverted, false if not. This is here mainly to support DICOM images with a photometric interpretation of MONOCHROME1
+             * @property {Number} sizeInBytes - the number of bytes used to store the pixels for this image.
+             * @property {Boolean} [falseColor=false] - Whether or not the image has undergone false color mapping
+             * @property {Array} [origPixelData] - Original pixel data for an image after it has undergone false color mapping
+             * @property {ImageStats} [stats] - Statistics for the last redraw of the image
+             * @property {Object} cachedLut - Cached Lookup Table for this image.
+             */
+
+            /**
+             * A Viewport Settings Object Cornerstone
+             *
+             * @typedef {Object} Viewport
+             *
+             * @property {Number} [scale=1.0] - The scale applied to the image. A scale of 1.0 will display no zoom (one image pixel takes up one screen pixel). A scale of 2.0 will be double zoom and a scale of .5 will be zoomed out by 2x
+             * @param {vec2} [translation] - An object with properties x and y which describe the translation to apply in the pixel coordinate system. Note that the image is initially displayed centered in the enabled element with a x and y translation of 0 and 0 respectively.
+             * @param {VOI} [voi] - an object with properties windowWidth and windowCenter.
+             * @property {boolean} [invert=false] - Whether or not the image is inverted.
+             * @property {boolean} [pixelReplication=false] - true if the image smooth / interpolation should be used when zoomed in on the image or false if pixel replication should be used.
+             * @property {boolean} [hflip=false] - true if the image is flipped horizontally. Default is false
+             * @property {boolean} [vflip=false] - true if the image is flipped vertically. Default is false
+             * @property {Number} [rotation=0] - the rotation of the image (90 degree increments). Default is 0
+             * @property {LUT} [modalityLUT] - the modality LUT to apply or undefined if none
+             * @property {LUT} [voiLUT] - the modality LUT to apply or undefined if none
+             */
+
+            /**
+             * An Enabled Element in Cornerstone
+             *
+             * @typedef {Object} EnabledElement
+             *
+             * @property {HTMLElement} element - The DOM element which has been enabled for use by Cornerstone
+             * @property {Image} [image] - The image currently displayed in the enabledElement
+             * @property {Viewport} [viewport] - The current viewport settings of the enabledElement
+             * @property {HTMLCanvasElement} [canvas] - The current canvas for this enabledElement
+             * @property {Boolean} invalid - Whether or not the image pixel data underlying the enabledElement has been changed, necessitating a redraw
+             * @property {Boolean} needsRedraw - A flag for triggering a redraw of the canvas without re-retrieving the pixel data, since it remains valid
+             * @property {[EnabledElementLayer]} [layers] - The layers that have been added to the enabledElement
+             * @property {Boolean} [syncViewports] - Whether or not to synchronize the viewport parameters
+             * for each of the enabled element's layers
+             * @property {Boolean} [lastSyncViewportsState] - The previous state for the sync viewport boolean
+             */
+
+            /**
+             * An Enabled Element Layer in Cornerstone
+             *
+             * @typedef {Object} EnabledElementLayer
+             *
+             * @property {HTMLElement} element - The DOM element which has been enabled for use by Cornerstone
+             * @property {Image} [image] - The image currently displayed in the enabledElement
+             * @property {Viewport} [viewport] - The current viewport settings of the enabledElement
+             * @property {HTMLCanvasElement} [canvas] - The current canvas for this enabledElement
+             * @property {Object} [options] - Layer drawing options
+             * @property {Boolean} invalid - Whether or not the image pixel data underlying the enabledElement has been changed, necessitating a redraw
+             * @property {Boolean} needsRedraw - A flag for triggering a redraw of the canvas without re-retrieving the pixel data, since it remains valid
+             */
+
+            /**
+             * Retrieves a Cornerstone Enabled Element object
+             *
+             * @param {HTMLElement} element An HTML Element enabled for Cornerstone
+             *
+             * @returns {EnabledElement} A Cornerstone Enabled Element
+             */
             function getEnabledElement(element) {
                 if (element === undefined) {
                     throw new Error('getEnabledElement: parameter element must not be undefined');
@@ -321,12 +445,11 @@
 
 
             function getLut(image, viewport) {
-
                 // If we have a cached lut and it has the right values, return it immediately
-                if (image.cachedLut != undefined && image.cachedLut.windowCenter === viewport.voi.windowCenter && image.cachedLut.windowWidth === viewport.voi.windowWidth && image.cachedLut.invert === viewport.invert) {
+                if (image.cachedLut !== undefined && image.cachedLut.windowCenter === viewport.voi.windowCenter && image.cachedLut.windowWidth === viewport.voi.windowWidth && image.cachedLut.invert === viewport.invert) {
                     return image.cachedLut.lutArray;
                 }
-                // console.log(viewport.voi, image);
+
                 // Lut is invalid or not present, regenerate it and cache it
                 (0, _generateLut2.default)(image, viewport.voi.windowWidth, viewport.voi.windowCenter, viewport.invert);
                 image.cachedLut.windowWidth = viewport.voi.windowWidth;
@@ -559,31 +682,24 @@
             });
 
             exports.default = function (image, windowWidth, windowCenter, invert, modalityLUT, voiLUT) {
-                // if (modalityLUT || voiLUT) {
-                //     return (0, _generateLutNew2.default)(image, windowWidth, windowCenter, invert, modalityLUT, voiLUT);
-                // }
-                var maxPixelValue = image.maxPixelValue;
-                var minPixelValue = image.minPixelValue;
-                var offset = Math.min(minPixelValue, 0);
+                if (modalityLUT || voiLUT) {
+                    return (0, _generateLutNew2.default)(image, windowWidth, windowCenter, invert, modalityLUT, voiLUT);
+                }
 
-                // image.cachedLut = null
                 if (image.cachedLut === undefined) {
-                    // var length = image.maxPixelValue - Math.min(image.minPixelValue, 0) + 1;
-                    var length = maxPixelValue - offset + 1;
+                    var length = image.maxPixelValue - Math.min(image.minPixelValue, 0) + 1;
+
                     image.cachedLut = {};
                     image.cachedLut.lutArray = new Uint8ClampedArray(length);
                 }
 
                 var lut = image.cachedLut.lutArray;
-                // var maxPixelValue = image.maxPixelValue;
-                // var minPixelValue = image.minPixelValue;
-                // var slope = image.slope;
-                // var intercept = image.intercept;
-                // var modalityLutValue = void 0;
-                // var voiLutValue = void 0;
-                var mlutfn = (0, _getModalityLUT2.default)(image.slope, image.intercept, modalityLUT);
-                var vlutfn = (0, _getVOILut2.default)(windowWidth, windowCenter, voiLUT);
-
+                var maxPixelValue = image.maxPixelValue;
+                var minPixelValue = image.minPixelValue;
+                var slope = image.slope;
+                var intercept = image.intercept;
+                var modalityLutValue = void 0;
+                var voiLutValue = void 0;
 
                 // NOTE: As of Nov 2014, most javascript engines have lower performance when indexing negative indexes.
                 // We improve performance by offsetting the pixel values for signed data to avoid negative indexes
@@ -597,34 +713,21 @@
                 }
 
                 if (invert === true) {
-                    // for (var storedValue = image.minPixelValue; storedValue <= maxPixelValue; storedValue++) {
-                    //     modalityLutValue = storedValue * slope + intercept;
-                    //     voiLutValue = ((modalityLutValue - windowCenter) / windowWidth + 0.5) * 255.0;
-                    //     lut[storedValue + -offset] = 255 - voiLutValue;
-                    // }
-                    for (var storedValue = minPixelValue; storedValue <= maxPixelValue; storedValue++) {
-                        lut[storedValue + -offset] = 255 - vlutfn(mlutfn(storedValue));
+                    for (var storedValue = image.minPixelValue; storedValue <= maxPixelValue; storedValue++) {
+                        modalityLutValue = storedValue * slope + intercept;
+                        voiLutValue = ((modalityLutValue - windowCenter) / windowWidth + 0.5) * 255.0;
+                        lut[storedValue + -offset] = 255 - voiLutValue;
                     }
                 } else {
-                    // for (var _storedValue = image.minPixelValue; _storedValue <= maxPixelValue; _storedValue++) {
-                    //     modalityLutValue = _storedValue * slope + intercept;
-                    //     voiLutValue = ((modalityLutValue - windowCenter) / windowWidth + 0.5) * 255.0;
-                    //     lut[_storedValue + -offset] = voiLutValue;
-                    // }
-                    for (var _storedValue = minPixelValue; _storedValue <= maxPixelValue; _storedValue++) {
-                        lut[_storedValue + -offset] = vlutfn(mlutfn(_storedValue));
+                    for (var _storedValue = image.minPixelValue; _storedValue <= maxPixelValue; _storedValue++) {
+                        modalityLutValue = _storedValue * slope + intercept;
+                        voiLutValue = ((modalityLutValue - windowCenter) / windowWidth + 0.5) * 255.0;
+                        lut[_storedValue + -offset] = voiLutValue;
                     }
                 }
 
                 return lut;
             };
-            var _getVOILut = __webpack_require__(56);
-
-            var _getVOILut2 = _interopRequireDefault(_getVOILut);
-
-            var _getModalityLUT = __webpack_require__(29);
-
-            var _getModalityLUT2 = _interopRequireDefault(_getModalityLUT);
 
             var _generateLutNew = __webpack_require__(12);
 
@@ -776,8 +879,68 @@
              * @returns {void}
              */
             function renderGrayscaleImage(enabledElement, invalidated) {
-                console.log(11111);
+                if (enabledElement === undefined) {
+                    throw new Error('drawImage: enabledElement parameter must not be undefined');
+                }
 
+                var image = enabledElement.image;
+
+                if (image === undefined) {
+                    throw new Error('drawImage: image must be loaded before it can be drawn');
+                }
+
+                // Get the canvas context and reset the transform
+                var context = enabledElement.canvas.getContext('2d');
+
+                context.setTransform(1, 0, 0, 1, 0, 0);
+
+                // Clear the canvas
+                context.fillStyle = 'black';
+                context.fillRect(0, 0, enabledElement.canvas.width, enabledElement.canvas.height);
+
+                // Turn off image smooth/interpolation if pixelReplication is set in the viewport
+                if (enabledElement.viewport.pixelReplication === true) {
+                    context.imageSmoothingEnabled = false;
+                    context.mozImageSmoothingEnabled = false; // Firefox doesn't support imageSmoothingEnabled yet
+                } else {
+                    context.imageSmoothingEnabled = true;
+                    context.mozImageSmoothingEnabled = true;
+                }
+
+                // Save the canvas context state and apply the viewport properties
+                (0, _setToPixelCoordinateSystem2.default)(enabledElement, context);
+
+                if (!enabledElement.renderingTools) {
+                    enabledElement.renderingTools = {};
+                }
+
+                var renderCanvas = void 0;
+
+                if (enabledElement.options && enabledElement.options.renderer && enabledElement.options.renderer.toLowerCase() === 'webgl') {
+                    // If this enabled element has the option set for WebGL, we should
+                    // User it as our renderer.
+                    renderCanvas = _index2.default.renderer.render(enabledElement);
+                } else {
+                    // If no options are set we will retrieve the renderCanvas through the
+                    // Normal Canvas rendering path
+                    renderCanvas = getRenderCanvas(enabledElement, image, invalidated);
+                }
+
+                // Draw the render canvas half the image size (because we set origin to the middle of the canvas above)
+                context.drawImage(renderCanvas, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
+
+                enabledElement.renderingTools.lastRenderedImageId = image.imageId;
+                var lastRenderedViewport = {};
+
+                lastRenderedViewport.windowCenter = enabledElement.viewport.voi.windowCenter;
+                lastRenderedViewport.windowWidth = enabledElement.viewport.voi.windowWidth;
+                lastRenderedViewport.invert = enabledElement.viewport.invert;
+                lastRenderedViewport.rotation = enabledElement.viewport.rotation;
+                lastRenderedViewport.hflip = enabledElement.viewport.hflip;
+                lastRenderedViewport.vflip = enabledElement.viewport.vflip;
+                lastRenderedViewport.modalityLUT = enabledElement.viewport.modalityLUT;
+                lastRenderedViewport.voiLUT = enabledElement.viewport.voiLUT;
+                enabledElement.renderingTools.lastRenderedViewport = lastRenderedViewport;
             }
 
             /**
@@ -788,7 +951,40 @@
              * @returns {void}
              */
             function addGrayscaleLayer(layer, invalidated) {
+                if (layer === undefined) {
+                    throw new Error('addGrayscaleLayer: layer parameter must not be undefined');
+                }
 
+                var image = layer.image;
+
+                if (image === undefined) {
+                    throw new Error('addGrayscaleLayer: image must be loaded before it can be drawn');
+                }
+
+                layer.renderingTools = layer.renderingTools || {};
+                layer.canvas = getRenderCanvas(layer, image, invalidated);
+
+                var context = layer.canvas.getContext('2d');
+
+                if (layer.viewport.pixelReplication === true) {
+                    context.imageSmoothingEnabled = false;
+                    context.mozImageSmoothingEnabled = false;
+                } else {
+                    context.imageSmoothingEnabled = true;
+                    context.mozImageSmoothingEnabled = true;
+                }
+
+                var lastRenderedViewport = {
+                    windowCenter: layer.viewport.voi.windowCenter,
+                    windowWidth: layer.viewport.voi.windowWidth,
+                    invert: layer.viewport.invert,
+                    rotation: layer.viewport.rotation,
+                    hflip: layer.viewport.hflip,
+                    vflip: layer.viewport.vflip
+                };
+
+                layer.renderingTools.lastRenderedImageId = image.imageId;
+                layer.renderingTools.lastRenderedViewport = lastRenderedViewport;
             }
 
             /***/ }),
@@ -814,6 +1010,17 @@
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+            exports.default = {
+                createProgramFromString: _createProgramFromString2.default,
+                renderer: {
+                    render: _renderer.render,
+                    initRenderer: _renderer.initRenderer,
+                    getRenderCanvas: _renderer.getRenderCanvas,
+                    isWebGLAvailable: _renderer.isWebGLAvailable
+                },
+                textureCache: _textureCache2.default,
+                isWebGLInitialized: _renderer.isWebGLInitialized
+            };
 
             /***/ }),
         /* 11 */
@@ -908,7 +1115,7 @@
             };
 
             function requestFrame(callback) {
-                // window.setTimeout(callback, 1000 / 60);
+                window.setTimeout(callback, 1000 / 60);
             }
 
             /**
@@ -1074,8 +1281,8 @@
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-            // __webpack_require__(68);
-            // __webpack_require__(67);
+            __webpack_require__(68);
+            __webpack_require__(67);
 
             /**
              * Helper function to trigger an event on a Cornerstone element with
@@ -1520,7 +1727,7 @@
              *
              * @returns {Boolean} - Whether or not the image has been converted to a false color image
              */
-            function convertImageToFalseColorImage(image, colormap, windowWidth, windowCenter) {
+            function convertImageToFalseColorImage(image, colormap) {
                 if (image.color && !image.falseColor) {
                     throw new Error('Color transforms are not implemented yet');
                 }
@@ -1544,17 +1751,11 @@
                 if (colormapId) {
                     var minPixelValue = image.minPixelValue || 0;
                     var maxPixelValue = image.maxPixelValue || 255;
-                    if (windowWidth && windowCenter){
-                        minPixelValue = windowCenter - windowWidth/2;
-                        maxPixelValue = windowCenter + windowWidth/2;
-                    }
 
                     image.restore = getRestoreImageMethod(image);
 
                     var lookupTable = colormap.createLookupTable();
 
-                    console.log("22222");
-                    console.log(lookupTable);
                     lookupTable.setTableRange(minPixelValue, maxPixelValue);
 
                     // Update the pixel data and render the new image
@@ -1588,16 +1789,12 @@
              */
             function convertToFalseColorImage(element, colormap) {
                 var enabledElement = (0, _enabledElements.getEnabledElement)(element);
+
                 return convertImageToFalseColorImage(enabledElement.image, colormap);
-            }
-            function convertToFalseColorImageWithWC(element, colormap, windowWidth, windowCenter) {
-                var enabledElement = (0, _enabledElements.getEnabledElement)(element);
-                return convertImageToFalseColorImage(enabledElement.image, colormap, windowWidth, windowCenter);
             }
 
             exports.convertImageToFalseColorImage = convertImageToFalseColorImage;
             exports.convertToFalseColorImage = convertToFalseColorImage;
-            exports.convertToFalseColorImageWithWC = convertToFalseColorImageWithWC;
             exports.restoreImage = restoreImage;
 
             /***/ }),
@@ -2736,9 +2933,9 @@
                 this.AlphaRange = [1, 1];
                 this.NaNColor = [128, 0, 0, 255];
                 this.BelowRangeColor = [0, 0, 0, 255];
-                this.UseBelowRangeColor = false;
+                this.UseBelowRangeColor = true;
                 this.AboveRangeColor = [255, 255, 255, 255];
-                this.UseAboveRangeColor = false;
+                this.UseAboveRangeColor = true;
                 this.InputRange = [0, 255];
                 this.Table = [];
 
@@ -2976,9 +3173,9 @@
 
                     // NOTE: Added Math.floor since values were not integers? Check VTK source
                     if (v < p.Range[0]) {
-                        dIndex = 0;
+                        dIndex = p.MaxIndex + BELOW_RANGE_COLOR_INDEX + 1.5;
                     } else if (v > p.Range[1]) {
-                        dIndex = p.MaxIndex;//p.MaxIndex + ABOVE_RANGE_COLOR_INDEX + 1.5;
+                        dIndex = p.MaxIndex + ABOVE_RANGE_COLOR_INDEX + 1.5;
                     } else {
                         dIndex = (v + p.Shift) * p.Scale;
                     }
@@ -3648,7 +3845,7 @@
 
                 $(enabledElement.element).trigger('CornerstoneNewImage', newImageEventData);
 
-                // (0, _updateImage2.default)(element);
+                (0, _updateImage2.default)(element);
             };
 
             var _enabledElements = __webpack_require__(0);
@@ -3665,7 +3862,7 @@
 
             var _now2 = _interopRequireDefault(_now);
 
-            // var _layers = __webpack_require__(16);
+            var _layers = __webpack_require__(16);
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3675,6 +3872,28 @@
 
             "use strict";
 
+
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+
+            exports.default = function (element) {
+                var enabledElement = (0, _enabledElements.getEnabledElement)(element);
+
+                if (enabledElement.image === undefined) {
+                    throw new Error('draw: image has not been loaded yet');
+                }
+
+                (0, _drawImage2.default)(enabledElement);
+            };
+
+            var _enabledElements = __webpack_require__(0);
+
+            var _drawImage = __webpack_require__(2);
+
+            var _drawImage2 = _interopRequireDefault(_drawImage);
+
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
             /***/ }),
         /* 37 */
@@ -4194,7 +4413,7 @@
                 storedColorPixelDataToCanvasImageData: _storedColorPixelDataToCanvasImageData2.default,
                 getTransform: _getTransform2.default,
                 calculateTransform: _calculateTransform2.default,
-                // Transform: _transform.Transform
+                Transform: _transform.Transform
             };
 
             /***/ }),
@@ -4203,6 +4422,24 @@
 
             "use strict";
 
+
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+
+            exports.default = function (element) {
+                var enabledElement = (0, _enabledElements.getEnabledElement)(element);
+
+                enabledElement.invalid = true;
+                enabledElement.needsRedraw = true;
+                var eventData = {
+                    element: element
+                };
+
+                $(element).trigger('CornerstoneInvalidated', eventData);
+            };
+
+            var _enabledElements = __webpack_require__(0);
 
             /***/ }),
         /* 47 */
@@ -4235,6 +4472,43 @@
             /***/ }),
         /* 48 */
         /***/ (function(module, exports, __webpack_require__) {
+
+            "use strict";
+
+
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+
+            exports.default = function (element, pageX, pageY) {
+                var enabledElement = (0, _enabledElements.getEnabledElement)(element);
+
+                if (enabledElement.image === undefined) {
+                    throw new Error('image has not been loaded yet');
+                }
+
+                // Convert the pageX and pageY to the canvas client coordinates
+                var rect = element.getBoundingClientRect();
+                var clientX = pageX - rect.left - window.pageXOffset;
+                var clientY = pageY - rect.top - window.pageYOffset;
+
+                var pt = { x: clientX,
+                    y: clientY };
+                var transform = (0, _getTransform2.default)(enabledElement);
+
+                transform.invert();
+
+                return transform.transformPoint(pt.x, pt.y);
+            };
+
+            var _enabledElements = __webpack_require__(0);
+
+            var _getTransform = __webpack_require__(11);
+
+            var _getTransform2 = _interopRequireDefault(_getTransform);
+
+            function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
             /***/ }),
         /* 49 */
         /***/ (function(module, exports, __webpack_require__) {
@@ -4272,6 +4546,17 @@
                 value: true
             });
 
+            var _renderColorImage = __webpack_require__(5);
+
+            var _renderGrayscaleImage = __webpack_require__(9);
+
+            var _renderWebImage = __webpack_require__(25);
+
+            exports.default = {
+                colorImage: _renderColorImage.renderColorImage,
+                grayscaleImage: _renderGrayscaleImage.renderGrayscaleImage,
+                webImage: _renderWebImage.renderWebImage
+            };
 
             /***/ }),
         /* 51 */
@@ -4382,6 +4667,122 @@
                 value: true
             });
 
+            var _drawImage = __webpack_require__(2);
+
+            Object.defineProperty(exports, 'drawImage', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_drawImage).default;
+                }
+            });
+
+            var _generateLut = __webpack_require__(8);
+
+            Object.defineProperty(exports, 'generateLut', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_generateLut).default;
+                }
+            });
+
+            var _generateLutNew = __webpack_require__(12);
+
+            Object.defineProperty(exports, 'generateLutNew', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_generateLutNew).default;
+                }
+            });
+
+            var _getDefaultViewport = __webpack_require__(3);
+
+            Object.defineProperty(exports, 'getDefaultViewport', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_getDefaultViewport).default;
+                }
+            });
+
+            var _requestAnimationFrame = __webpack_require__(13);
+
+            Object.defineProperty(exports, 'requestAnimationFrame', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_requestAnimationFrame).default;
+                }
+            });
+
+            var _storedPixelDataToCanvasImageData = __webpack_require__(15);
+
+            Object.defineProperty(exports, 'storedPixelDataToCanvasImageData', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_storedPixelDataToCanvasImageData).default;
+                }
+            });
+
+            var _storedColorPixelDataToCanvasImageData = __webpack_require__(14);
+
+            Object.defineProperty(exports, 'storedColorPixelDataToCanvasImageData', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_storedColorPixelDataToCanvasImageData).default;
+                }
+            });
+
+            var _index = __webpack_require__(45);
+
+            Object.defineProperty(exports, 'internal', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_index).default;
+                }
+            });
+
+            var _renderColorImage = __webpack_require__(5);
+
+            Object.defineProperty(exports, 'renderColorImage', {
+                enumerable: true,
+                get: function get() {
+                    return _renderColorImage.renderColorImage;
+                }
+            });
+
+            var _renderGrayscaleImage = __webpack_require__(9);
+
+            Object.defineProperty(exports, 'renderGrayscaleImage', {
+                enumerable: true,
+                get: function get() {
+                    return _renderGrayscaleImage.renderGrayscaleImage;
+                }
+            });
+
+            var _renderWebImage = __webpack_require__(25);
+
+            Object.defineProperty(exports, 'renderWebImage', {
+                enumerable: true,
+                get: function get() {
+                    return _renderWebImage.renderWebImage;
+                }
+            });
+
+            var _canvasToPixel = __webpack_require__(33);
+
+            Object.defineProperty(exports, 'canvasToPixel', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_canvasToPixel).default;
+                }
+            });
+
+            var _disable = __webpack_require__(34);
+
+            Object.defineProperty(exports, 'disable', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_disable).default;
+                }
+            });
 
             var _displayImage = __webpack_require__(35);
 
@@ -4389,6 +4790,24 @@
                 enumerable: true,
                 get: function get() {
                     return _interopRequireDefault(_displayImage).default;
+                }
+            });
+
+            var _draw = __webpack_require__(36);
+
+            Object.defineProperty(exports, 'draw', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_draw).default;
+                }
+            });
+
+            var _drawInvalidated = __webpack_require__(37);
+
+            Object.defineProperty(exports, 'drawInvalidated', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_drawInvalidated).default;
                 }
             });
 
@@ -4443,86 +4862,86 @@
                 }
             });
 
-            // var _layers = __webpack_require__(16);
+            var _layers = __webpack_require__(16);
 
-            // Object.defineProperty(exports, 'addLayer', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _layers.addLayer;
-            //     }
-            // });
-            // Object.defineProperty(exports, 'removeLayer', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _layers.removeLayer;
-            //     }
-            // });
-            // Object.defineProperty(exports, 'getLayer', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _layers.getLayer;
-            //     }
-            // });
-            // Object.defineProperty(exports, 'getLayers', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _layers.getLayers;
-            //     }
-            // });
-            // Object.defineProperty(exports, 'getVisibleLayers', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _layers.getVisibleLayers;
-            //     }
-            // });
-            // Object.defineProperty(exports, 'setActiveLayer', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _layers.setActiveLayer;
-            //     }
-            // });
-            // Object.defineProperty(exports, 'getActiveLayer', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _layers.getActiveLayer;
-            //     }
-            // });
+            Object.defineProperty(exports, 'addLayer', {
+                enumerable: true,
+                get: function get() {
+                    return _layers.addLayer;
+                }
+            });
+            Object.defineProperty(exports, 'removeLayer', {
+                enumerable: true,
+                get: function get() {
+                    return _layers.removeLayer;
+                }
+            });
+            Object.defineProperty(exports, 'getLayer', {
+                enumerable: true,
+                get: function get() {
+                    return _layers.getLayer;
+                }
+            });
+            Object.defineProperty(exports, 'getLayers', {
+                enumerable: true,
+                get: function get() {
+                    return _layers.getLayers;
+                }
+            });
+            Object.defineProperty(exports, 'getVisibleLayers', {
+                enumerable: true,
+                get: function get() {
+                    return _layers.getVisibleLayers;
+                }
+            });
+            Object.defineProperty(exports, 'setActiveLayer', {
+                enumerable: true,
+                get: function get() {
+                    return _layers.setActiveLayer;
+                }
+            });
+            Object.defineProperty(exports, 'getActiveLayer', {
+                enumerable: true,
+                get: function get() {
+                    return _layers.getActiveLayer;
+                }
+            });
 
-            // var _fitToWindow = __webpack_require__(20);
+            var _fitToWindow = __webpack_require__(20);
 
-            // Object.defineProperty(exports, 'fitToWindow', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _interopRequireDefault(_fitToWindow).default;
-            //     }
-            // });
-            //
-            // var _getDefaultViewportForImage = __webpack_require__(40);
-            //
-            // Object.defineProperty(exports, 'getDefaultViewportForImage', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _interopRequireDefault(_getDefaultViewportForImage).default;
-            //     }
-            // });
-            //
-            // var _getImage = __webpack_require__(41);
+            Object.defineProperty(exports, 'fitToWindow', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_fitToWindow).default;
+                }
+            });
 
-            // Object.defineProperty(exports, 'getImage', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _interopRequireDefault(_getImage).default;
-            //     }
-            // });
-            //
-            // var _getPixels = __webpack_require__(42);
-            //
-            // Object.defineProperty(exports, 'getPixels', {
-            //     enumerable: true,
-            //     get: function get() {
-            //         return _interopRequireDefault(_getPixels).default;
-            //     }
-            // });
+            var _getDefaultViewportForImage = __webpack_require__(40);
+
+            Object.defineProperty(exports, 'getDefaultViewportForImage', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_getDefaultViewportForImage).default;
+                }
+            });
+
+            var _getImage = __webpack_require__(41);
+
+            Object.defineProperty(exports, 'getImage', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_getImage).default;
+                }
+            });
+
+            var _getPixels = __webpack_require__(42);
+
+            Object.defineProperty(exports, 'getPixels', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_getPixels).default;
+                }
+            });
 
             var _getStoredPixels = __webpack_require__(21);
 
@@ -4566,6 +4985,69 @@
                 enumerable: true,
                 get: function get() {
                     return _imageLoader.registerUnknownImageLoader;
+                }
+            });
+
+            var _invalidate = __webpack_require__(46);
+
+            Object.defineProperty(exports, 'invalidate', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_invalidate).default;
+                }
+            });
+
+            var _invalidateImageId = __webpack_require__(47);
+
+            Object.defineProperty(exports, 'invalidateImageId', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_invalidateImageId).default;
+                }
+            });
+
+            var _pageToPixel = __webpack_require__(48);
+
+            Object.defineProperty(exports, 'pageToPixel', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_pageToPixel).default;
+                }
+            });
+
+            var _pixelToCanvas = __webpack_require__(49);
+
+            Object.defineProperty(exports, 'pixelToCanvas', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_pixelToCanvas).default;
+                }
+            });
+
+            var _reset = __webpack_require__(51);
+
+            Object.defineProperty(exports, 'reset', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_reset).default;
+                }
+            });
+
+            var _resize = __webpack_require__(26);
+
+            Object.defineProperty(exports, 'resize', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_resize).default;
+                }
+            });
+
+            var _setToPixelCoordinateSystem = __webpack_require__(6);
+
+            Object.defineProperty(exports, 'setToPixelCoordinateSystem', {
+                enumerable: true,
+                get: function get() {
+                    return _interopRequireDefault(_setToPixelCoordinateSystem).default;
                 }
             });
 
@@ -4655,12 +5137,6 @@
                     return _falseColorMapping.convertToFalseColorImage;
                 }
             });
-            Object.defineProperty(exports, 'convertToFalseColorImageWithWC', {
-                enumerable: true,
-                get: function get() {
-                    return _falseColorMapping.convertToFalseColorImageWithWC;
-                }
-            });
             Object.defineProperty(exports, 'restoreImage', {
                 enumerable: true,
                 get: function get() {
@@ -4686,17 +5162,58 @@
             "use strict";
 
 
-            // var _layers = __webpack_require__(16);
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
 
-            // var _renderColorImage = __webpack_require__(5);
+            exports.default = function (enabledElement, invalidated) {
+                var element = enabledElement.element;
+                var allLayers = (0, _layers.getLayers)(element);
+                var activeLayer = (0, _layers.getActiveLayer)(element);
+                var visibleLayers = (0, _layers.getVisibleLayers)(element);
+                var resynced = !enabledElement.lastSyncViewportsState && enabledElement.syncViewports;
 
-            // var _renderGrayscaleImage = __webpack_require__(9);
+                // This state will help us to determine if the user has re-synced the
+                // layers allowing us to make a new copy of the viewports
+                enabledElement.lastSyncViewportsState = enabledElement.syncViewports;
 
-            // var _falseColorMapping = __webpack_require__(19);
+                // Stores a copy of all viewports if the user has just synced them then we can use the
+                // copies to calculate anything later (ratio, translation offset, rotation offset, etc)
+                if (resynced) {
+                    allLayers.forEach(function (layer) {
+                        syncedViewports[layer.layerId] = cloneViewport(layer.viewport);
+                    });
+                }
+
+                // Sync all viewports in case it's activated
+                if (enabledElement.syncViewports === true) {
+                    syncViewports(visibleLayers, activeLayer);
+                }
+
+                // Get the enabled element's canvas so we can draw to it
+                var context = enabledElement.canvas.getContext('2d');
+
+                context.setTransform(1, 0, 0, 1, 0, 0);
+
+                // Clear the canvas
+                context.fillStyle = 'black';
+                context.fillRect(0, 0, enabledElement.canvas.width, enabledElement.canvas.height);
+
+                // Render all visible layers
+                renderLayers(context, activeLayer, visibleLayers, invalidated);
+            };
+
+            var _layers = __webpack_require__(16);
+
+            var _renderColorImage = __webpack_require__(5);
+
+            var _renderGrayscaleImage = __webpack_require__(9);
+
+            var _falseColorMapping = __webpack_require__(19);
 
             var _setToPixelCoordinateSystem = __webpack_require__(6);
 
-            // var _setToPixelCoordinateSystem2 = _interopRequireDefault(_setToPixelCoordinateSystem);
+            var _setToPixelCoordinateSystem2 = _interopRequireDefault(_setToPixelCoordinateSystem);
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4750,7 +5267,52 @@
              * @returns {void}
              */
             function renderLayers(context, activeLayer, layers, invalidated) {
+                var canvas = context.canvas;
 
+                // Loop through each layer and draw it to the canvas
+                layers.forEach(function (layer) {
+                    context.save();
+
+                    // Set the layer's canvas to the pixel coordinate system
+                    layer.canvas = canvas;
+                    (0, _setToPixelCoordinateSystem2.default)(layer, context);
+
+                    // Convert the image to false color image if layer.options.colormap
+                    // exists or try to restore the original pixel data otherwise
+                    var pixelDataUpdated = void 0;
+
+                    if (layer.options.colormap) {
+                        pixelDataUpdated = (0, _falseColorMapping.convertImageToFalseColorImage)(layer.image, layer.options.colormap);
+                    } else {
+                        pixelDataUpdated = (0, _falseColorMapping.restoreImage)(layer.image);
+                    }
+
+                    // If the image got updated it needs to be re-rendered
+                    invalidated = invalidated || pixelDataUpdated;
+
+                    // Render into the layer's canvas
+                    if (layer.image.color === true) {
+                        (0, _renderColorImage.addColorLayer)(layer, invalidated);
+                    } else {
+                        (0, _renderGrayscaleImage.addGrayscaleLayer)(layer, invalidated);
+                    }
+
+                    // Apply any global opacity settings that have been defined for this layer
+                    if (layer.options && layer.options.opacity) {
+                        context.globalAlpha = layer.options.opacity;
+                    } else {
+                        context.globalAlpha = 1;
+                    }
+
+                    if (layer.options && layer.options.fillStyle) {
+                        context.fillStyle = layer.options.fillStyle;
+                    }
+
+                    // Draw from the current layer's canvas onto the enabled element's canvas
+                    context.drawImage(layer.canvas, 0, 0, layer.image.width, layer.image.height, 0, 0, layer.image.width, layer.image.height);
+
+                    context.restore();
+                });
             }
 
             /**
@@ -5007,7 +5569,7 @@
 
             var _index = __webpack_require__(60);
 
-            // var _vertexShader = __webpack_require__(66);
+            var _vertexShader = __webpack_require__(66);
 
             var _textureCache = __webpack_require__(32);
 
@@ -5687,7 +6249,75 @@
             exports.uint8Shader = uint8Shader;
 
             /***/ }),
+        /* 66 */
+        /***/ (function(module, exports, __webpack_require__) {
 
+            "use strict";
+
+
+            Object.defineProperty(exports, "__esModule", {
+                value: true
+            });
+            var vertexShader = exports.vertexShader = 'attribute vec2 a_position;' + 'attribute vec2 a_texCoord;' + 'uniform vec2 u_resolution;' + 'varying vec2 v_texCoord;' + 'void main() {' + 'vec2 zeroToOne = a_position / u_resolution;' + 'vec2 zeroToTwo = zeroToOne * 2.0;' + 'vec2 clipSpace = zeroToTwo - 1.0;' + 'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);' + 'v_texCoord = a_texCoord;' + '}';
+
+            /***/ }),
+        /* 67 */
+        /***/ (function(module, exports) {
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+            if (!Array.prototype.findIndex) {
+                Array.prototype.findIndex = function(predicate) {
+                    if (this === null) {
+                        throw new TypeError('Array.prototype.findIndex called on null or undefined');
+                    }
+                    if (typeof predicate !== 'function') {
+                        throw new TypeError('predicate must be a function');
+                    }
+                    var list = Object(this);
+                    var length = list.length >>> 0;
+                    var thisArg = arguments[1];
+                    var value;
+
+                    for (var i = 0; i < length; i++) {
+                        value = list[i];
+                        if (predicate.call(thisArg, value, i, list)) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                };
+            }
+
+            /***/ }),
+        /* 68 */
+        /***/ (function(module, exports) {
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+            if (!Array.prototype.find) {
+                Array.prototype.find = function(predicate) {
+                    if (this === null) {
+                        throw new TypeError('Array.prototype.find called on null or undefined');
+                    }
+                    if (typeof predicate !== 'function') {
+                        throw new TypeError('predicate must be a function');
+                    }
+                    var list = Object(this);
+                    var length = list.length >>> 0;
+                    var thisArg = arguments[1];
+                    var value;
+
+                    for (var i = 0; i < length; i++) {
+                        value = list[i];
+                        if (predicate.call(thisArg, value, i, list)) {
+                            return value;
+                        }
+                    }
+                    return undefined;
+                };
+            }
+
+
+            /***/ })
         /******/ ]);
 });
 //# sourceMappingURL=cornerstone.js.map
