@@ -88,83 +88,53 @@
         // Load the example image and display it
         cornerstone.loadImage(imageId).then(function(image) {
             cornerstone.displayImage(element, image);
+        //
+            $('#dicomImage').mousedown(function (e) {
+                var lastX = e.pageX;
+                var lastY = e.pageY;
+
+                var mouseButton = e.which;
+
+                $(document).mousemove(function (e) {
+                    var deltaX = e.pageX - lastX
+                    var deltaY = e.pageY - lastY;
+                    lastX = e.pageX;
+                    lastY = e.pageY;
+
+                    e.stopPropagation();
+                    var viewport = cornerstone.getViewport(element);
+
+                    if (mouseButton == 1) {
+                        viewport.voi.windowWidth += (deltaX / viewport.scale);
+                        viewport.voi.windowCenter += (deltaY / viewport.scale);
+                        cornerstone.setViewport(element, viewport);
+                        $('#bottomleft').text("WW/WL:" + Math.round(viewport.voi.windowWidth) + "/" + Math.round(viewport.voi.windowCenter));
+                    }
+                });
+
+                $(document).mouseup(function (e) {
+                    $(document).unbind('mousemove');
+                    $(document).unbind('mouseup');
+                });
+            });
         });
 
         // Dropdown listener to get the new colormap
         // selected by the user and update the image
         function colormapChanged() {
-            var image = cornerstone.getEnabledElement(element).image;
-            var colormapId = $('#colormaps').val();
-            var minPixelValue = image.minPixelValue || 0;
-            var maxPixelValue = image.maxPixelValue || 255;
-            var colormap;
+            // var image = cornerstone.getEnabledElement(element).image;
+            var colormap = cornerstone.colors.getColormap($('#colormaps').val());
 
-            // Use selected the first option ("Select...")
-            if (colormapId === '') {
-                return;
-            } else if(colormapId == 'custom') {
-                colormap = getCustomLookupTable();
-            } else {
-                colormap = cornerstone.colors.getColormap(colormapId);
-            }
-
-            cornerstone.convertToFalseColorImage(element, colormap);
+            var viewport = cornerstone.getViewport(element);
+            viewport.colormap = colormap;
+            cornerstone.setViewport(element, viewport);
+            // cornerstone.convertToFalseColorImage(element, colormap);
             cornerstone.updateImage(element, true);
 
-            // Update the colorbar at the top of the image
-            updateColorbar(colormap);
         }
-
-        function getCustomLookupTable(minPixelValue, maxPixelValue) {
-            var colormap = cornerstone.colors.getColormap('myCustomColorMap');
-            colormap.setNumberOfColors(6);
-
-            // You can also use `addColor` but in this case it wouldn't work.
-            // Any colormap returned by `getColormap` lasts forever (global) and
-            // calling `addColor` would result in duplicated colors.
-            colormap.insertColor(0, [188, 252, 201, 255]); // Banana
-            colormap.insertColor(1, [245, 222, 179, 255]); // Wheat
-            colormap.insertColor(2, [255, 125,  64, 255]); // Flesh
-            colormap.insertColor(3, [135,  38,  87, 255]); // Raspberry
-            colormap.insertColor(4, [227, 206,  87, 255]); // Mint
-            colormap.insertColor(5, [ 51, 160, 201, 255]); // Peacock
-
-            return colormap;
-        }
-
-        // Update the colorbar at the top of the image
-        function updateColorbar(colormap) {
-            var lookupTable = colormap.createLookupTable();
-            var canvas = $('#colorbar').get(0);
-            var ctx = canvas.getContext('2d');
-            var height = canvas.height;
-            var width = canvas.width;
-            var colorbar = ctx.createImageData(512, 20);
-
-            // Set the min and max values then the lookup table
-            // will be able to return the right color for this range
-            lookupTable.setTableRange(0, width);
-
-            // Update the colorbar pixel by pixel
-            for(var col = 0; col < width; col++) {
-                var color = lookupTable.mapValue(col);
-
-                for(var row = 0; row < height; row++) {
-                    var pixel = (col + row * width) * 4;
-                    colorbar.data[pixel] = color[0];
-                    colorbar.data[pixel+1] = color[1];
-                    colorbar.data[pixel+2] = color[2];
-                    colorbar.data[pixel+3] = color[3];
-                }
-            }
-
-            ctx.putImageData(colorbar, 0, 0);
-        }
-
         $('#colormaps').change(function() {
             colormapChanged();
         });
-
         fillColormapsList();
     });
 

@@ -357,7 +357,9 @@
                     hflip: false,
                     vflip: false,
                     modalityLUT: image.modalityLUT,
-                    voiLUT: image.voiLUT
+                    voiLUT: image.voiLUT,
+                    colormap: image.colormap,
+                    labelmap: Boolean(image.labelmap)
                 };
 
                 // Fit image to window
@@ -746,6 +748,8 @@
                 value: true
             });
             exports.renderGrayscaleImage = renderGrayscaleImage;
+            exports.renderPseudoColorImage = renderPseudoColorImage;
+            exports.addPseudoColorLayer = addPseudoColorLayer;
             exports.addGrayscaleLayer = addGrayscaleLayer;
 
             var _generateLut = __webpack_require__(8);
@@ -942,6 +946,242 @@
                 lastRenderedViewport.voiLUT = enabledElement.viewport.voiLUT;
                 enabledElement.renderingTools.lastRenderedViewport = lastRenderedViewport;
             }
+
+
+            function doesImageNeedToBeRendered(enabledElement, image) {
+                var lastRenderedImageId = enabledElement.renderingTools.lastRenderedImageId;
+                var lastRenderedViewport = enabledElement.renderingTools.lastRenderedViewport;
+
+                return image.imageId !== lastRenderedImageId || !lastRenderedViewport || lastRenderedViewport.windowCenter !== enabledElement.viewport.voi.windowCenter || lastRenderedViewport.windowWidth !== enabledElement.viewport.voi.windowWidth || lastRenderedViewport.invert !== enabledElement.viewport.invert || lastRenderedViewport.rotation !== enabledElement.viewport.rotation || lastRenderedViewport.hflip !== enabledElement.viewport.hflip || lastRenderedViewport.vflip !== enabledElement.viewport.vflip || lastRenderedViewport.modalityLUT !== enabledElement.viewport.modalityLUT || lastRenderedViewport.voiLUT !== enabledElement.viewport.voiLUT || lastRenderedViewport.colormap !== enabledElement.viewport.colormap;
+            }
+            function initializeRenderCanvas(enabledElement, image) {
+                var renderCanvas = enabledElement.renderingTools.renderCanvas;
+
+                // Resize the canvas
+                renderCanvas.width = image.width;
+                renderCanvas.height = image.height;
+
+                var canvasContext = renderCanvas.getContext('2d');
+
+                // NOTE - we need to fill the render canvas with white pixels since we
+                // control the luminance using the alpha channel to improve rendering performance.
+                canvasContext.fillStyle = 'white';
+                canvasContext.fillRect(0, 0, renderCanvas.width, renderCanvas.height);
+
+                var renderCanvasData = canvasContext.getImageData(0, 0, image.width, image.height);
+
+                enabledElement.renderingTools.renderCanvasContext = canvasContext;
+                enabledElement.renderingTools.renderCanvasData = renderCanvasData;
+            }
+
+
+            /**
+             *
+             * @param {Image} image A Cornerstone Image Object
+             * @param {Array} grayscaleLut Lookup table array
+             * @param {LookupTable|Array} colorLut Lookup table array
+             * @param {Uint8ClampedArray} canvasImageDataData canvasImageData.data buffer filled with white pixels
+             *
+             * @returns {void}
+             */
+            function storedPixelDataToCanvasImageDataPseudocolorLUT(image, grayscaleLut, colorLut, canvasImageDataData) {
+                var start = (0, _now2.default)();
+                var pixelData = image.getPixelData();
+
+                image.stats.lastGetPixelDataTime = (0, _now2.default)() - start;
+
+                var numPixels = pixelData.length;
+                var minPixelValue = image.minPixelValue;
+                var canvasImageDataIndex = 0;
+                var storedPixelDataIndex = 0;
+                var grayscale = void 0;
+                var rgba = void 0;
+                var clut = void 0;
+
+                start = (0, _now2.default)();
+
+                if (colorLut.Table) {
+                    clut = colorLut.Table;
+                } else {
+                    clut = colorLut;
+                }
+
+                if (minPixelValue < 0) {
+                    while (storedPixelDataIndex < numPixels) {
+                        grayscale = grayscaleLut[pixelData[storedPixelDataIndex++] + -minPixelValue];
+                        rgba = clut[grayscale];
+                        canvasImageDataData[canvasImageDataIndex++] = rgba[0];
+                        canvasImageDataData[canvasImageDataIndex++] = rgba[1];
+                        canvasImageDataData[canvasImageDataIndex++] = rgba[2];
+                        canvasImageDataData[canvasImageDataIndex++] = rgba[3];
+                    }
+                } else {
+                    while (storedPixelDataIndex < numPixels) {
+                        grayscale = grayscaleLut[pixelData[storedPixelDataIndex++]];
+                        rgba = clut[grayscale];
+                        canvasImageDataData[canvasImageDataIndex++] = rgba[0];
+                        canvasImageDataData[canvasImageDataIndex++] = rgba[1];
+                        canvasImageDataData[canvasImageDataIndex++] = rgba[2];
+                        canvasImageDataData[canvasImageDataIndex++] = rgba[3];
+                    }
+                }
+
+                image.stats.lastStoredPixelDataToCanvasImageDataTime = (0, _now2.default)() - start;
+            }
+
+            function getPsRenderCanvas(enabledElement, image, invalidated) {
+                if (!enabledElement.renderingTools.renderCanvas) {
+                    enabledElement.renderingTools.renderCanvas = document.createElement('canvas');
+                }
+
+                var renderCanvas = enabledElement.renderingTools.renderCanvas;
+
+                // TODO: Deprecate enabledElement.options.colormap
+                var colormap = enabledElement.viewport.colormap || enabledElement.options.colormap;
+
+                if (colormap && typeof colormap === 'string') {
+                    colormap = _index2.default.getColormap(colormap);
+                }
+
+                if (!colormap) {
+                    throw new Error('renderPseudoColorImage: colormap not found.');
+                }
+
+                var colormapId = colormap.getId();
+                if (doesImageNeedToBeRendered(enabledElement, image) === false && invalidated !== true && enabledElement.renderingTools.colormapId === colormapId) {
+                    return renderCanvas;
+                }
+
+                // If our render canvas does not match the size of this image reset it
+                // NOTE: This might be inefficient if we are updating multiple images of different
+                // Sizes frequently.
+                if (renderCanvas.width !== image.width || renderCanvas.height !== image.height) {
+                    initializeRenderCanvas(enabledElement, image);
+                }
+
+                // Get the lut to use
+                var start = (0, _now2.default)();
+
+                if (!enabledElement.renderingTools.colorLut || invalidated || enabledElement.renderingTools.colormapId !== colormapId) {
+                    colormap.setNumberOfColors(256);
+                    enabledElement.renderingTools.colorLut = colormap.createLookupTable();
+                    enabledElement.renderingTools.colormapId = colormapId;
+                }
+
+                var lut = getLut(image, enabledElement.viewport, invalidated);
+
+                image.stats = image.stats || {};
+                image.stats.lastLutGenerateTime = (0, _now2.default)() - start;
+
+                var colorLut = enabledElement.renderingTools.colorLut;
+                var renderCanvasData = enabledElement.renderingTools.renderCanvasData;
+                var renderCanvasContext = enabledElement.renderingTools.renderCanvasContext;
+
+                storedPixelDataToCanvasImageDataPseudocolorLUT(image, lut, colorLut, renderCanvasData.data);
+
+                start = (0, _now2.default)();
+                renderCanvasContext.putImageData(renderCanvasData, 0, 0);
+                image.stats.lastPutImageDataTime = (0, _now2.default)() - start;
+
+                return renderCanvas;
+            }
+
+            /**
+             * API function to draw a pseudo-color image to a given enabledElement
+             *
+             * @param {EnabledElement} enabledElement The Cornerstone Enabled Element to redraw
+             * @param {Boolean} invalidated - true if pixel data has been invalidated and cached rendering should not be used
+             * @returns {void}
+             */
+            function renderPseudoColorImage(enabledElement, invalidated) {
+                if (enabledElement === undefined) {
+                    throw new Error('drawImage: enabledElement parameter must not be undefined');
+                }
+
+                var image = enabledElement.image;
+
+                if (image === undefined) {
+                    throw new Error('drawImage: image must be loaded before it can be drawn');
+                }
+
+                // Get the canvas context and reset the transform
+                var context = enabledElement.canvas.getContext('2d');
+
+                context.setTransform(1, 0, 0, 1, 0, 0);
+
+                // Clear the canvas
+                context.fillStyle = 'black';
+                context.fillRect(0, 0, enabledElement.canvas.width, enabledElement.canvas.height);
+
+                // Turn off image smooth/interpolation if pixelReplication is set in the viewport
+                context.imageSmoothingEnabled = !enabledElement.viewport.pixelReplication;
+                context.mozImageSmoothingEnabled = context.imageSmoothingEnabled;
+
+                // Save the canvas context state and apply the viewport properties
+                (0, _setToPixelCoordinateSystem2.default)(enabledElement, context);
+
+                // If no options are set we will retrieve the renderCanvas through the
+                // Normal Canvas rendering path
+                // TODO: Add WebGL support for pseudocolor pipeline
+                var renderCanvas = getPsRenderCanvas(enabledElement, image, invalidated);
+                var width = image.width,
+                    height = image.height;
+
+
+                context.drawImage(renderCanvas, 0, 0, width, height, 0, 0, width, height);
+
+                enabledElement.renderingTools = saveLastRendered(enabledElement);
+
+
+            }
+
+            function saveLastRendered(enabledElement) {
+                var imageId = enabledElement.image.imageId;
+                var viewport = enabledElement.viewport;
+
+                enabledElement.renderingTools.lastRenderedImageId = imageId;
+                enabledElement.renderingTools.lastRenderedViewport = {
+                    windowCenter: viewport.voi.windowCenter,
+                    windowWidth: viewport.voi.windowWidth,
+                    invert: viewport.invert,
+                    rotation: viewport.rotation,
+                    hflip: viewport.hflip,
+                    vflip: viewport.vflip,
+                    modalityLUT: viewport.modalityLUT,
+                    voiLUT: viewport.voiLUT,
+                    colormap: viewport.colormap
+                };
+                return enabledElement.renderingTools;
+            }
+            /**
+             * API function to draw a pseudo-color image to a given layer
+             *
+             * @param {EnabledElementLayer} layer The layer that the image will be added to
+             * @param {Boolean} invalidated - true if pixel data has been invalidated and cached rendering should not be used
+             * @returns {void}
+             */
+            function addPseudoColorLayer(layer, invalidated) {
+                if (layer === undefined) {
+                    throw new Error('addPseudoColorLayer: layer parameter must not be undefined');
+                }
+
+                var image = layer.image;
+
+                if (image === undefined) {
+                    throw new Error('addPseudoColorLayer: image must be loaded before it can be drawn');
+                }
+
+                layer.canvas = getRenderCanvas(layer, image, invalidated);
+
+                var context = layer.canvas.getContext('2d');
+
+                // Turn off image smooth/interpolation if pixelReplication is set in the viewport
+                context.imageSmoothingEnabled = !layer.viewport.pixelReplication;
+                context.mozImageSmoothingEnabled = context.imageSmoothingEnabled;
+
+                // layer.renderingTools = (0, _saveLastRendered2.default)(layer);
+            }
+
 
             /**
              * API function to draw a grayscale image to a given layer
@@ -2258,8 +2498,8 @@
                 image.lut = undefined;
                 image.cachedLut = undefined;
                 image.render = undefined;
-                image.intercept = 0;
                 image.slope = 1;
+                image.intercept = 0;
                 image.minPixelValue = 0;
                 image.maxPixelValue = 255;
                 image.windowWidth = 255;
@@ -4199,7 +4439,9 @@
                     hflip: viewport.hflip,
                     vflip: viewport.vflip,
                     modalityLUT: viewport.modalityLUT,
-                    voiLUT: viewport.voiLUT
+                    voiLUT: viewport.voiLUT,
+                    colormap: viewport.colormap,
+                    labelmap: viewport.labelmap
                 };
             };
 
@@ -4615,6 +4857,8 @@
                 enabledElement.viewport.vflip = viewport.vflip;
                 enabledElement.viewport.modalityLUT = viewport.modalityLUT;
                 enabledElement.viewport.voiLUT = viewport.voiLUT;
+                enabledElement.viewport.colormap = viewport.colormap;
+                enabledElement.viewport.labelmap = viewport.labelmap;
 
                 // Prevent window width from being too small (note that values close to zero are valid and can occur with
                 // PET images in particular)
@@ -5361,7 +5605,15 @@
                     var render = image.render;
 
                     if (!render) {
-                        render = image.color ? _renderColorImage.renderColorImage : _renderGrayscaleImage.renderGrayscaleImage;
+                        if (enabledElement.viewport.colormap && enabledElement.viewport.colormap !== '' && enabledElement.image.labelmap === true) {
+                            render = _renderLabelMapImage.renderLabelMapImage;
+                        } else if (enabledElement.viewport.colormap && enabledElement.viewport.colormap !== '') {
+                            render = _renderPseudoColorImage.renderPseudoColorImage;
+                        } else if (image.color) {
+                            render = _renderColorImage.renderColorImage;
+                        } else {
+                            render = _renderGrayscaleImage.renderGrayscaleImage;
+                        }
                     }
 
                     render(enabledElement, invalidated);
@@ -5398,6 +5650,17 @@
             var _renderColorImage = __webpack_require__(5);
 
             var _renderGrayscaleImage = __webpack_require__(9);
+
+
+            var _renderPseudoColorImage = __webpack_require__(9);
+
+            Object.defineProperty(exports, 'renderPseudoColorImage', {
+                enumerable: true,
+                get: function get() {
+                    return _renderPseudoColorImage.renderPseudoColorImage;
+                }
+            });
+
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
